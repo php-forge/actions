@@ -15,6 +15,10 @@
 ### Ejemplo de uso de la acción [PHPUnit](https://github.com/sebastianbergmann/phpunit)
 
 ```yml
+on:
+  - pull_request
+  - push
+  
 name: build
 
 jobs:
@@ -36,6 +40,10 @@ jobs:
 ### Ejemplo de uso de la acción [PSALM](https://github.com/vimeo/psalm)
 
 ```yml
+on:
+  - pull_request
+  - push
+
 name: static analysis
 
 jobs:
@@ -51,11 +59,15 @@ jobs:
 ### Ejemplo de uso de la acción [ROAVE-INFECTION](https://github.com/roave/infection-static-analysis-plugin)
 
 ```yml
+on:
+  - pull_request
+  - push
+
 name: mutation test
 
 jobs:
   mutation:
-    uses: php-forge/reusable-actions/.github/workflows/infection.yml@main
+    uses: php-forge/reusable-actions/.github/workflows/roave-infection.yml@main
     with:
       os: >-
         ['ubuntu-latest']
