@@ -55,7 +55,7 @@ name: mutation test
 
 jobs:
   mutation:
-    uses: php-forge/reusable-actions/.github/workflows/infection.yml@master
+    uses: php-forge/reusable-actions/.github/workflows/infection.yml@main
     with:
       os: >-
         ['ubuntu-latest']
