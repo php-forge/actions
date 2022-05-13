@@ -27,7 +27,7 @@ jobs:
     with:
       # coverage: pcov / coverage: xdebug / coverage: xdebug2 / coverage: none 
       # extensions: pdo, pdo_pgsql
-      # init-values: date.timezone='UTC'      
+      # ini-values: date.timezone='UTC'      
       os: >-
         ['ubuntu-latest', 'windows-latest']
       php: >-

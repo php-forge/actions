@@ -55,7 +55,7 @@ jobs:
         with:
           coverage: ${{ inputs.coverage }}
           extensions: ${{ inputs.extensions}}
-          ini-values: ${{ inputs.init-values }}
+          ini-values: ${{ inputs.ini-values }}
           php-version: ${{ matrix.php }}
           tools: ${{ inputs.tools }}
 
