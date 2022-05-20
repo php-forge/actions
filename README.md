@@ -26,7 +26,7 @@ jobs:
     uses: php-forge/reusable-actions/.github/workflows/phpunit.yml@main
     with:
       # coverage: pcov / coverage: xdebug / coverage: xdebug2 / coverage: none 
-      # extensions: pdo, pdo_pgsql
+      # extensions: ext-php 
       # ini-values: date.timezone='UTC'      
       os: >-
         ['ubuntu-latest', 'windows-latest']
@@ -50,10 +50,13 @@ jobs:
   psalm:
     uses: php-forge/reusable-actions/.github/workflows/psalm.yml@main
     with:
+      # extensions: ext-php 
+      # ini-values: date.timezone='UTC'       
       os: >-
         ['ubuntu-latest']
       php: >-
         ['7.4', '8.0', '8.1']
+      #tools: composer:v2, cs2pr 
 ```
 
 ### Ejemplo de uso de la acción [ROAVE-INFECTION](https://github.com/roave/infection-static-analysis-plugin)
@@ -69,10 +72,14 @@ jobs:
   mutation:
     uses: php-forge/reusable-actions/.github/workflows/roave-infection.yml@main
     with:
+      # coverage: pcov / coverage: xdebug / coverage: xdebug2 / coverage: none 
+      # extensions: ext-php
+      # ini-values: date.timezone='UTC'   
       os: >-
         ['ubuntu-latest']
       php: >-
         ['8.1']
+      #tools: composer:v2        
     secrets:
       STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 ```

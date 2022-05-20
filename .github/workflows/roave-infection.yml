@@ -3,6 +3,21 @@ name: roave-infection
 on:
   workflow_call:
     inputs:
+      coverage:
+        description: Generate code coverage report.
+        default: pcov
+        required: false
+        type: string
+      extensions:
+        description: List of extensions to PHP.
+        default:
+        required: false
+        type: string
+      ini-values:
+        description: Initial values for PHP configuration.
+        default: date.timezone='UTC'
+        required: false
+        type: string
       os:
         description: Os to test, separated by comma.
         required: true
@@ -10,6 +25,11 @@ on:
       php:
         description: PHP versions to test, separated by comma.
         required: true
+        type: string
+      tools:
+        description: Tools to test, separated by comma.
+        default: composer:v2
+        required: false
         type: string
     secrets:
       STRYKER_DASHBOARD_API_KEY:
@@ -33,10 +53,11 @@ jobs:
       - name: Install PHP.
         uses: shivammathur/setup-php@v2
         with:
+          coverage: ${{ inputs.coverage }}
+          extensions: ${{ inputs.extensions}}
+          ini-values: ${{ inputs.ini-values}}
           php-version: ${{ matrix.php }}
-          ini-values: date.timezone='UTC'
-          coverage: pcov
-          tools: composer:v2
+          tools: ${{ inputs.tools }}
 
       - name: Update composer.
         run: composer self-update

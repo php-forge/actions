@@ -3,6 +3,16 @@ name: psalm
 on:
   workflow_call:
     inputs:
+      extensions:
+        description: List of extensions to PHP.
+        default:
+        required: false
+        type: string
+      ini-values:
+        description: Initial values for PHP configuration.
+        default: date.timezone='UTC'
+        required: false
+        type: string
       os:
         description: Os to test, separated by comma.
         required: true
@@ -10,6 +20,11 @@ on:
       php:
         description: PHP versions to test, separated by comma.
         required: true
+        type: string
+      tools:
+        description: Tools to test, separated by comma.
+        default: composer:v2, cs2pr
+        required: false
         type: string
 
 jobs:
@@ -30,9 +45,10 @@ jobs:
       - name: Install PHP.
         uses: shivammathur/setup-php@v2
         with:
+          extensions: ${{ inputs.extensions}}
+          ini-values: ${{ inputs.ini-values }}
           php-version: ${{ matrix.php }}
-          tools: composer:v2, cs2pr
-          coverage: none
+          tools: ${{ inputs.tools }}
 
       - name: Update composer.
         run: composer self-update
@@ -41,4 +57,4 @@ jobs:
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
       - name: Static analysis.
-        run: vendor/bin/psalm --shepherd --stats --output-format=checkstyle | cs2pr --graceful-warnings --colorize
+        run: vendor/bin/psalm --shepherd --stats --output-format=checkstyle --php-version=${{ matrix.php }} | cs2pr --graceful-warnings --colorize
