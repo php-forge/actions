@@ -2,17 +2,17 @@
     <a href="https://github.com/php-forge/reusable-actions" target="_blank">
         <img src="https://avatars.githubusercontent.com/u/103309199?s=400&u=ca3561c692f53ed7eb290d3bb226a2828741606f&v=4" height="100px">
     </a>
-    <h1 align="center">PHP Forge - Reusable actions</h1>
+    <h1 align="center">PHPForge - actions reusable</h1>
     <br>
 </p>
 
-## Requerimientos
+## Requeriments
 
 - PHP.
 
-## Uso
+## Usage
 
-### Ejemplo de uso de la acción [PHPUnit](https://github.com/sebastianbergmann/phpunit)
+### Example of using the [PHPUnit](https://github.com/sebastianbergmann/phpunit) action.
 
 ```yml
 on:
@@ -23,7 +23,7 @@ name: build
 
 jobs:
   phpunit:
-    uses: php-forge/reusable-actions/.github/workflows/phpunit.yml@main
+    uses: php-forge/actions/.github/workflows/phpunit.yml@main
     with:
       # coverage: pcov / coverage: xdebug / coverage: xdebug2 / coverage: none 
       # extensions: ext-php 
@@ -37,7 +37,7 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 ```
 
-### Ejemplo de uso de la acción [PSALM](https://github.com/vimeo/psalm)
+### Example of using the [PSALM](https://github.com/vimeo/psalm) action.
 
 ```yml
 on:
@@ -48,7 +48,7 @@ name: static analysis
 
 jobs:
   psalm:
-    uses: php-forge/reusable-actions/.github/workflows/psalm.yml@main
+    uses: php-forge/actions/.github/workflows/psalm.yml@main
     with:
       # extensions: ext-php 
       # ini-values: date.timezone='UTC'       
@@ -59,7 +59,7 @@ jobs:
       #tools: composer:v2, cs2pr 
 ```
 
-### Ejemplo de uso de la acción [ROAVE-INFECTION](https://github.com/roave/infection-static-analysis-plugin)
+### Example of using the [ROAVE-INFECTION](https://github.com/roave/infection-static-analysis-plugin) action.
 
 ```yml
 on:
@@ -70,7 +70,7 @@ name: mutation test
 
 jobs:
   mutation:
-    uses: php-forge/reusable-actions/.github/workflows/roave-infection.yml@main
+    uses: php-forge/actions/.github/workflows/roave-infection.yml@main
     with:
       # coverage: pcov / coverage: xdebug / coverage: xdebug2 / coverage: none 
       # extensions: ext-php
@@ -84,13 +84,10 @@ jobs:
       STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 ```
 
-## Licencia
+## Our social networks
 
-El paquete `php-forge/reusable-actions` es software libre. Se publica bajo los términos de la Licencia BSD.
-Consulte [`LICENSE`](./LICENSE.md) para obtener más información.
+[![Twitter](https://img.shields.io/badge/twitter-follow-1DA1F2?logo=twitter&logoColor=1DA1F2&labelColor=555555?style=flat)](https://twitter.com/Terabytesoftw)
 
-Mantenido por [Terabytesoftw](https://github.com/terabytesoftw).
+## License
 
-## Nuestras redes sociales
-
-[![Twitter](https://img.shields.io/badge/twitter-follow-1DA1F2?logo=twitter&logoColor=1DA1F2&labelColor=555555?style=flat)](https://twitter.com/PhpForge)
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

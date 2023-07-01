@@ -1,11 +1,21 @@
-name: psalm
+name: build
 
 on:
   workflow_call:
     inputs:
+      codeception-command:
+        description: Codeception command to run.
+        default: vendor/bin/codecept run --coverage-xml
+        required: false
+        type: string
       composer-command:
         description: Composer command to run.
         default: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+        required: false
+        type: string
+      coverage:
+        description: Generate code coverage report.
+        default: pcov
         required: false
         type: string
       extensions:
@@ -28,13 +38,17 @@ on:
         type: string
       tools:
         description: Tools to test, separated by comma.
-        default: composer:v2, cs2pr
+        default: composer:v2
         required: false
         type: string
 
 jobs:
-  psalm:
-    name: PHP ${{ matrix.php }}-${{ matrix.os }}
+  codeception:
+    name: PHP-${{ matrix.php }}-${{ matrix.os }}
+
+    env:
+      key: cache-v1
+      YII_ENV: tests
 
     runs-on: ${{ matrix.os }}
 
@@ -47,11 +61,11 @@ jobs:
       - name: Checkout.
         uses: actions/checkout@v3
 
-      - name: Install PHP.
+      - name: Install PHP with extensions.
         uses: shivammathur/setup-php@v2
         with:
-          coverage: none
-          extensions: ${{ inputs.extensions}}
+          coverage: ${{ inputs.coverage }}
+          extensions: ${{ inputs.extensions }}
           ini-values: ${{ inputs.ini-values }}
           php-version: ${{ matrix.php }}
           tools: ${{ inputs.tools }}
@@ -62,5 +76,11 @@ jobs:
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}
 
-      - name: Static analysis.
-        run: vendor/bin/psalm --shepherd --stats --output-format=checkstyle --php-version=${{ matrix.php }} | cs2pr --graceful-warnings --colorize
+      - name: Run tests with codeception with code coverage.
+        run: ${{ inputs.codeception-command }}
+
+      - name: Upload coverage to Codecov.
+        if: matrix.os == 'ubuntu-latest' && matrix.php == '8.1'
+        uses: codecov/codecov-action@v3
+        with:
+          file: tests/_output/coverage.xml
