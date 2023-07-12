@@ -40,6 +40,10 @@ on:
       CODECOV_TOKEN:
         required: true
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   phpunit:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
