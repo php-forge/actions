@@ -89,6 +89,8 @@ jobs:
           if ($env:AUTH_TOKEN -ne '') {
             composer config -g github-oauth.github.com $env:AUTH_TOKEN
           }
+        env:
+          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
 
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}
