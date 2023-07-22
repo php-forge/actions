@@ -38,6 +38,10 @@ concurrency:
 
 jobs:
   psalm:
+    permissions:
+      contents: read
+      packages: read
+
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
@@ -62,6 +66,9 @@ jobs:
 
       - name: Update composer.
         run: composer self-update
+
+      - name: Configure composer.
+        run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }};
 
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}

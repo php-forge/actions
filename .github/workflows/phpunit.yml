@@ -36,8 +36,13 @@ on:
         default: composer:v2
         required: false
         type: string
+
     secrets:
+      AUTH_TOKEN:
+        description: GitHub token for composer.
+        required: false
       CODECOV_TOKEN:
+        description: Codecov token.
         required: true
 
 concurrency:
@@ -70,6 +75,12 @@ jobs:
 
       - name: Update composer.
         run: composer self-update
+
+      - name: Configure composer.
+        run: |
+          if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
+            composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
+          fi
 
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}
