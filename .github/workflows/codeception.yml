@@ -42,6 +42,11 @@ on:
         required: false
         type: string
 
+    secrets:
+      AUTH_TOKEN:
+        description: GitHub token for composer.
+        required: false
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -76,6 +81,10 @@ jobs:
 
       - name: Update composer.
         run: composer self-update
+
+      - name: Configure composer.
+        if: ${{ env.AUTH_TOKEN != '' }}
+        run: composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }}
 
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}
