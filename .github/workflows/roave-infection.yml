@@ -37,6 +37,9 @@ on:
         required: false
         type: string
     secrets:
+      AUTH_TOKEN:
+        description: GitHub token for composer.
+        required: false
       STRYKER_DASHBOARD_API_KEY:
         required: true
 
@@ -72,7 +75,10 @@ jobs:
         run: composer self-update
 
       - name: Configure composer.
-        run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }};
+        run: |
+          if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
+            composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
+          fi
 
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}
