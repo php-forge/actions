@@ -83,8 +83,10 @@ jobs:
         run: composer self-update
 
       - name: Configure composer.
-        if: ${{ env.AUTH_TOKEN != '' }}
-        run: composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }}
+        run: |
+          if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
+            composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
+          fi
 
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}
