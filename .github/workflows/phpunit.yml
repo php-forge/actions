@@ -76,11 +76,21 @@ jobs:
       - name: Update composer.
         run: composer self-update
 
-      - name: Configure composer.
+      - name: Configure composer linux.
+        if: matrix.os == 'ubuntu-latest'
         run: |
           if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
             composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
           fi
+
+      - name: Configure composer windows.
+        if: matrix.os == 'windows-latest'
+        run: |
+          if ($env:AUTH_TOKEN -ne '') {
+            composer config -g github-oauth.github.com $env:AUTH_TOKEN
+          }
+        env:
+          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
 
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}
