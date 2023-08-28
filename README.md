@@ -12,18 +12,119 @@
 
 ## Usage
 
+### Example of using the [Dependency check](https://github.com/maglnet/ComposerRequireChecker)
+
+```yml
+on:
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'infection.json.dist'
+      - 'phpunit.xml.dist'
+      - 'psalm.xml'
+
+  push:
+    branches: ['main']
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'infection.json.dist'
+      - 'phpunit.xml.dist'
+      - 'psalm.xml'
+
+name: dependency-check
+
+jobs:
+  composer-require-checker:
+    uses: php-forge/actions/.github/workflows/composer-require-checker.yml@main
+    secrets:
+      AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }} # for repository private
+    with:
+      os: >-
+        ['ubuntu-latest']
+      php: >-
+        ['8.1', '8.2']
+```
+
+### Example of using the [Easy Coding Standard](https://github.com/easy-coding-standard/easy-coding-standard)
+
+```yml
+on:
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'infection.json.dist'
+      - 'phpunit.xml.dist'
+
+  push:
+    branches: ['main']
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'infection.json.dist'
+      - 'phpunit.xml.dist'
+
+name: ecs
+
+jobs:
+  easy-coding-standard:
+    uses: php-forge/actions/.github/workflows/ecs.yml@main
+    secrets:
+      AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }} # for repository private
+    with:
+      os: >-
+        ['ubuntu-latest']
+      php: >-
+        ['8.1', '8.2']
+```
+
 ### Example of using the [PHPUnit](https://github.com/sebastianbergmann/phpunit) action.
 
 ```yml
 on:
-  - pull_request
-  - push
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'infection.json.dist'
+      - 'psalm.xml'
+
+  push:
+    branches: ['main']
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'infection.json.dist'
+      - 'psalm.xml'
   
 name: build
 
 jobs:
   phpunit:
     uses: php-forge/actions/.github/workflows/phpunit.yml@main
+    secrets:
+      AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }} # for repository private
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     with:
       # coverage: pcov / coverage: xdebug / coverage: xdebug2 / coverage: none 
       # extensions: ext-php 
@@ -33,22 +134,40 @@ jobs:
       php: >-
         ['8.0', '8.1']
       #tools: composer:v2 
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 ```
 
 ### Example of using the [PSALM](https://github.com/vimeo/psalm) action.
 
 ```yml
 on:
-  - pull_request
-  - push
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'infection.json.dist'
+      - 'psalm.xml'
+
+  push:
+    branches: ['main']
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'infection.json.dist'
+      - 'psalm.xml'
 
 name: static analysis
 
 jobs:
   psalm:
     uses: php-forge/actions/.github/workflows/psalm.yml@main
+    secrets:
+      AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }} # for repository private   
     with:
       # extensions: ext-php 
       # ini-values: date.timezone='UTC'       
@@ -63,14 +182,35 @@ jobs:
 
 ```yml
 on:
-  - pull_request
-  - push
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'infection.json.dist'
+      - 'psalm.xml'
+
+  push:
+    branches: ['main']
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'infection.json.dist'
+      - 'psalm.xml'
 
 name: mutation test
 
 jobs:
   mutation:
     uses: php-forge/actions/.github/workflows/roave-infection.yml@main
+    secrets:
+      AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }} # for repository private
+      STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}    
     with:
       # coverage: pcov / coverage: xdebug / coverage: xdebug2 / coverage: none 
       # extensions: ext-php
@@ -80,8 +220,6 @@ jobs:
       php: >-
         ['8.1']
       #tools: composer:v2        
-    secrets:
-      STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 ```
 
 ## Our social networks
