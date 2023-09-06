@@ -8,6 +8,11 @@ on:
         default: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
         required: false
         type: string
+      composer-version:
+        description: Composer version to use.
+        default:
+        required: false
+        type: string
       coverage:
         description: Generate code coverage report.
         default: pcov
@@ -74,7 +79,7 @@ jobs:
           tools: ${{ inputs.tools }}
 
       - name: Update composer.
-        run: composer self-update
+        run: composer self-update ${{ inputs.composer-version }}
 
       - name: Configure composer linux.
         if: matrix.os == 'ubuntu-latest'
