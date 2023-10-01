@@ -1,4 +1,4 @@
-name: phpunit
+name: phpstan
 
 on:
   workflow_call:
@@ -11,11 +11,6 @@ on:
       composer-version:
         description: Composer version to use.
         default:
-        required: false
-        type: string
-      coverage:
-        description: Generate code coverage report.
-        default: pcov
         required: false
         type: string
       extensions:
@@ -38,7 +33,7 @@ on:
         type: string
       tools:
         description: Tools to test, separated by comma.
-        default: composer:v2
+        default: composer:v2, cs2pr
         required: false
         type: string
 
@@ -46,16 +41,13 @@ on:
       AUTH_TOKEN:
         description: GitHub token for composer.
         required: false
-      CODECOV_TOKEN:
-        description: Codecov token.
-        required: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  phpunit:
+  psalm:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
@@ -72,7 +64,7 @@ jobs:
       - name: Install PHP.
         uses: shivammathur/setup-php@v2
         with:
-          coverage: ${{ inputs.coverage }}
+          coverage: none
           extensions: ${{ inputs.extensions}}
           ini-values: ${{ inputs.ini-values }}
           php-version: ${{ matrix.php }}
@@ -81,31 +73,14 @@ jobs:
       - name: Update composer.
         run: composer self-update ${{ inputs.composer-version }}
 
-      - name: Configure composer linux.
-        if: matrix.os == 'ubuntu-latest'
+      - name: Configure composer.
         run: |
           if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
             composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
           fi
 
-      - name: Configure composer windows.
-        if: matrix.os == 'windows-latest'
-        run: |
-          if ($env:AUTH_TOKEN -ne '') {
-            composer config -g github-oauth.github.com $env:AUTH_TOKEN
-          }
-        env:
-          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
-
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}
 
-      - name: Run tests with phpunit and generate coverage.
-        run: vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always
-
-      - name: Upload coverage to Codecov.
-        if: matrix.os == 'ubuntu-latest' && matrix.php == '8.1'
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+      - name: Static analysis.
+        run: vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr
