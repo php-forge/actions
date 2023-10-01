@@ -47,7 +47,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  psalm:
+  phpstan:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
