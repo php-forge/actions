@@ -15,7 +15,7 @@ on:
         type: string
       composer-version:
         description: Composer version to use.
-        default: 
+        default:
         required: false
         type: string
       coverage:
@@ -67,6 +67,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
+      fail-fast: false
       matrix:
         os: ${{ fromJson(inputs.os) }}
         php: ${{ fromJson(inputs.php) }}
