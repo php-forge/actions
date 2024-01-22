@@ -118,6 +118,7 @@ jobs:
         run: ${{ inputs.composer-command }}
 
       - name: Run tests with codeception with code coverage.
+        continue-on-error:  ${{ inputs.debug }}
         run: ${{ inputs.codeception-command }}
 
       - name: Upload coverage to Codecov.
