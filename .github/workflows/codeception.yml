@@ -72,7 +72,7 @@ jobs:
 
     env:
       key: cache-v1
-      YII_ENV: tests
+      YII_C3: true
 
     runs-on: ${{ matrix.os }}
 
