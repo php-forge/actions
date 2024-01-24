@@ -85,5 +85,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'Apply fixes from Easy Coding Standard.'
-          file_pattern: '*.php'
           push_options: '--force'
