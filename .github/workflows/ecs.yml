@@ -81,8 +81,7 @@ jobs:
       - name: Run easy-coding-standard.
         run: vendor/bin/ecs check src tests --ansi --fix
 
-      - name: Git Auto Commit
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: 'Apply fixes from Easy Coding Standard.'
-          push_options: '--force'
+      - name: Checkout PR.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr checkout ${{ github.event.pull_request.number }}
