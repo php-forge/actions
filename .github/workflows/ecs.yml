@@ -13,11 +13,6 @@ on:
         default:
         required: false
         type: string
-      coverage:
-        description: Generate code coverage report.
-        default: none
-        required: false
-        type: string
       extensions:
         description: List of extensions to PHP.
         default:
@@ -35,11 +30,6 @@ on:
       php:
         description: PHP versions to test, separated by comma.
         required: true
-        type: string
-      tools:
-        description: Tools to test, separated by comma.
-        default: composer:v2
-        required: false
         type: string
 
     secrets:
@@ -70,11 +60,10 @@ jobs:
       - name: Install PHP.
         uses: shivammathur/setup-php@v2
         with:
-          coverage: ${{ inputs.coverage }}
+          coverage: none
           extensions: ${{ inputs.extensions}}
           ini-values: ${{ inputs.ini-values }}
           php-version: ${{ matrix.php }}
-          tools: ${{ inputs.tools }}
 
       - name: Update composer.
         run: composer self-update ${{ inputs.composer-version }}
@@ -90,4 +79,11 @@ jobs:
         run: ${{ inputs.composer-command }}
 
       - name: Run easy-coding-standard.
-        run: vendor/bin/ecs check src tests --ansi
+        run: vendor/bin/ecs check src tests --ansi --fix
+
+      - name: Git Auto Commit
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'Apply fixes from Easy Coding Standard.'
+          file_pattern: '*.php'
+          push_options: '--force'
