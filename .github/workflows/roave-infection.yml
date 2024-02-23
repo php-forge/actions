@@ -18,6 +18,11 @@ on:
         default: pcov
         required: false
         type: string
+      debug:
+        description: Debug mode.
+        default: false
+        required: false
+        type: boolean
       extensions:
         description: List of extensions to PHP.
         default:
@@ -94,3 +99,14 @@ jobs:
           vendor/bin/roave-infection-static-analysis-plugin --threads=2 --ignore-msi-with-no-mutations --only-covered
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+
+      - name: Archive codeception results
+        if: ${{ inputs.debug }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: infection
+          path: ./infection.log
+
+      - name: Download all workflow run artifacts
+        if: ${{ inputs.debug }}
+        uses: actions/download-artifact@v4

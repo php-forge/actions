@@ -3,11 +3,6 @@ name: build
 on:
   workflow_call:
     inputs:
-      debug:
-        description: Debug mode.
-        default: false
-        required: false
-        type: boolean
       codeception-command:
         description: Codeception command to run.
         default: vendor/bin/codecept run --coverage-xml
@@ -28,6 +23,11 @@ on:
         default: pcov
         required: false
         type: string
+      debug:
+        description: Debug mode.
+        default: false
+        required: false
+        type: boolean
       extensions:
         description: List of extensions to PHP.
         default:
