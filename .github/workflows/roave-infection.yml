@@ -37,6 +37,11 @@ on:
         description: Os to test, separated by comma.
         required: true
         type: string
+      options:
+        description: Options for the roave-infection-static-analysis-plugin.
+        default: --threads=2 --ignore-msi-with-no-mutations --only-covered
+        required: false
+        type: string
       php:
         description: PHP versions to test, separated by comma.
         required: true
@@ -96,7 +101,7 @@ jobs:
 
       - name: Run roave-infection.
         run: |
-          vendor/bin/roave-infection-static-analysis-plugin --threads=2 --ignore-msi-with-no-mutations --only-covered
+          vendor/bin/roave-infection-static-analysis-plugin ${{ inputs.options }}
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 
