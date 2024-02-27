@@ -79,4 +79,4 @@ jobs:
         run: ${{ inputs.composer-command }}
 
       - name: Run easy-coding-standard.
-        run: vendor/bin/ecs check src tests --ansi
+        run: vendor/bin/ecs check --ansi
