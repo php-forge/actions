@@ -3,6 +3,16 @@ name: phpunit
 on:
   workflow_call:
     inputs:
+      cancel-in-progress:
+        description: Cancel in progress jobs.
+        default: true
+        required: false
+        type: boolean
+      concurrency-group:
+        description: Concurrency group for the workflow.
+        default: ${{ github.workflow }}-${{ github.ref }}
+        required: true
+        type: string
       composer-command:
         description: Composer command to run.
         default: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
@@ -58,6 +68,10 @@ on:
 jobs:
   phpunit:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
+
+    concurrency:
+      group: ${{ inputs.concurrency-group }}
+      cancel-in-progress: ${{ inputs.cancel-in-progress }}
 
     runs-on: ${{ matrix.os }}
 
