@@ -69,10 +69,6 @@ jobs:
   phpunit:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
 
-    concurrency:
-      group: ${{ inputs.concurrency-group }}
-      cancel-in-progress: ${{ inputs.cancel-in-progress }}
-
     runs-on: ${{ matrix.os }}
 
     strategy:
