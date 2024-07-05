@@ -3,6 +3,11 @@ name: phpunit
 on:
   workflow_call:
     inputs:
+      concurrency-group:
+        description: Concurrency group name.
+        default: ${{ github.workflow }}-${{ github.ref }}
+        required: false
+        type: string
       composer-command:
         description: Composer command to run.
         default: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
@@ -18,6 +23,16 @@ on:
         default: pcov
         required: false
         type: string
+      enable-concurrency:
+        description: Enable concurrency.
+        default: true
+        required: false
+        type: boolean
+      enable-memcached:
+        description: Enable memcached.
+        default: false
+        required: false
+        type: boolean
       exclude-group-phpunit:
         description: Exclude group from phpunit.
         default:
@@ -55,13 +70,13 @@ on:
         description: Codecov token.
         required: false
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   phpunit:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
+
+    concurrency:
+      group:  ${{ matrix.os }}-${{ matrix.php }}-${{ inputs.concurrency-group }}
+      cancel-in-progress: ${{ inputs.enable-concurrency }}
 
     runs-on: ${{ matrix.os }}
 
@@ -83,6 +98,10 @@ jobs:
           ini-values: ${{ inputs.ini-values }}
           php-version: ${{ matrix.php }}
           tools: ${{ inputs.tools }}
+
+      - name: Install Memcached.
+        if: ${{ inputs.enable-memcached }}
+        uses: niden/actions-memcached@v7
 
       - name: Update composer.
         run: composer self-update ${{ inputs.composer-version }}
