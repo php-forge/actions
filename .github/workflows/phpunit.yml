@@ -70,7 +70,7 @@ jobs:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
 
     concurrency:
-      group: ${{ matrix.os }}-${{ inputs.concurrency-group }}-${{ matrix.php }}
+      group:  ${{ matrix.os }}-${{ matrix.php }}-${{ inputs.concurrency-group }}
       cancel-in-progress: ${{ inputs.enable-concurrency }}
 
     runs-on: ${{ matrix.os }}
