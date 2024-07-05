@@ -18,6 +18,16 @@ on:
         default: pcov
         required: false
         type: string
+      enable-concurrency:
+        description: Enable concurrency.
+        default: true
+        required: false
+        type: boolean
+      concurrency-group:
+        description: Concurrency group name.
+        default: ${{ github.workflow }}-${{ github.ref }}
+        required: false
+        type: string
       extensions:
         description: List of extensions to PHP.
         default:
@@ -59,6 +69,10 @@ jobs:
   phpunit:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
 
+    concurrency:
+      group: ${{ inputs.concurrency-group }}
+      cancel-in-progress: ${{ inputs.enable-concurrency }}
+      
     runs-on: ${{ matrix.os }}
 
     strategy:
