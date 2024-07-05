@@ -99,7 +99,7 @@ jobs:
           php-version: ${{ matrix.php }}
           tools: ${{ inputs.tools }}
 
-      - name: Install Memcached.
+      - name: Run service memcached.
         if: ${{ inputs.enable-memcached }}
         uses: niden/actions-memcached@v7
 
