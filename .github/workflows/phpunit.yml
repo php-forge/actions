@@ -107,7 +107,12 @@ jobs:
         run: ${{ inputs.composer-command }}
 
       - name: Run tests with phpunit and generate coverage.
-        run: vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always --exclude-group ${{ inputs.exclude-group-phpunit }}
+        run: |
+          {% if inputs.exclude-group-phpunit %}
+            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always --exclude-group ${{ inputs.exclude-group-phpunit }}
+          {% else %}
+            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always
+          {% endif %}
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '8.1'
