@@ -107,6 +107,16 @@ jobs:
         run: ${{ inputs.composer-command }}
 
       - name: Run tests with phpunit and generate coverage.
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          if [ -n "${{ inputs.exclude-group-phpunit }}" ]; then
+            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always --exclude-group ${{ inputs.exclude-group-phpunit }}
+          else
+            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always
+          fi
+
+      - name: Run tests with phpunit and generate coverage.
+        if: matrix.os == 'windows-latest'
         run: |
           {% if inputs.exclude-group-phpunit %}
             vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always --exclude-group ${{ inputs.exclude-group-phpunit }}
