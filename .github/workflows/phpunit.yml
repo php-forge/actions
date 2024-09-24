@@ -108,11 +108,11 @@ jobs:
 
       - name: Run tests with phpunit and generate coverage.
         run: |
-          {% if inputs.exclude-group-phpunit %}
+          if [ -n "${{ inputs.exclude-group-phpunit }}" ]; then
             vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always --exclude-group ${{ inputs.exclude-group-phpunit }}
-          {% else %}
+          else
             vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always
-          {% endif %}
+          fi
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '8.1'
