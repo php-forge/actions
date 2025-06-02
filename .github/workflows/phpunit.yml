@@ -3,6 +3,11 @@ name: phpunit
 on:
   workflow_call:
     inputs:
+      concurrency-group:
+        description: Concurrency group name.
+        default: ${{ github.workflow }}-${{ github.ref }}
+        required: false
+        type: string
       composer-command:
         description: Composer command to run.
         default: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
@@ -18,7 +23,12 @@ on:
         default: pcov
         required: false
         type: string
-      exclude-group-phpunit:
+      enable-concurrency:
+        description: Enable concurrency.
+        default: true
+        required: false
+        type: boolean
+      exclude-group:
         description: Exclude group from phpunit.
         default:
         required: false
@@ -28,10 +38,20 @@ on:
         default:
         required: false
         type: string
+      group:
+        description: Run only tests from the specified group(s).
+        default:
+        required: false
+        type: string
       ini-values:
         description: Initial values for PHP configuration.
         default: date.timezone='UTC'
         required: false
+        type: string
+      name:
+        description: Name of the job.
+        default: PHPUnit
+        required: true
         type: string
       os:
         description: Os to test, separated by comma.
@@ -48,20 +68,17 @@ on:
         type: string
 
     secrets:
-      AUTH_TOKEN:
-        description: GitHub token for composer.
-        required: false
       CODECOV_TOKEN:
         description: Codecov token.
         required: false
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   phpunit:
-    name: PHP ${{ matrix.php }}-${{ matrix.os }}
+    name: ${{ inputs.name }}-${{ matrix.php }}-${{ matrix.os }}
+
+    concurrency:
+      group:  ${{ matrix.os }}-${{ matrix.php }}-${{ inputs.concurrency-group }}
+      cancel-in-progress: ${{ inputs.enable-concurrency }}
 
     runs-on: ${{ matrix.os }}
 
@@ -87,42 +104,22 @@ jobs:
       - name: Update composer.
         run: composer self-update ${{ inputs.composer-version }}
 
-      - name: Configure composer linux.
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
-            composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
-          fi
-
-      - name: Configure composer windows.
-        if: matrix.os == 'windows-latest'
-        run: |
-          if ($env:AUTH_TOKEN -ne '') {
-            composer config -g github-oauth.github.com $env:AUTH_TOKEN
-          }
-        env:
-          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
-
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}
 
-      - name: Run tests with phpunit and generate coverage.
-        if: matrix.os == 'ubuntu-latest'
+      - name: Run PHPUnit with coverage.
         run: |
-          if [ -n "${{ inputs.exclude-group-phpunit }}" ]; then
-            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always --exclude-group ${{ inputs.exclude-group-phpunit }}
-          else
-            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always
+          CMD="vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always"
+
+          if [ -n "${{ inputs.group }}" ]; then
+            CMD="$CMD --group ${{ inputs.group }}"
           fi
 
-      - name: Run tests with phpunit and generate coverage.
-        if: matrix.os == 'windows-latest'
-        run: |
-          {% if inputs.exclude-group-phpunit %}
-            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always --exclude-group ${{ inputs.exclude-group-phpunit }}
-          {% else %}
-            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always
-          {% endif %}
+          if [ -n "${{ inputs.exclude-group }}" ]; then
+            CMD="$CMD --exclude-group ${{ inputs.exclude-group }}"
+          fi
+
+          $CMD
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '8.1'
