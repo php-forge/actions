@@ -13,6 +13,11 @@ on:
         default:
         required: false
         type: string
+      configuration:
+        description: PHPStan configuration file.
+        default: phpstan.neon
+        required: false
+        type: string
       extensions:
         description: List of extensions to PHP.
         default:
@@ -84,4 +89,4 @@ jobs:
         run: ${{ inputs.composer-command }}
 
       - name: Static analysis.
-        run: vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr
+        run: vendor/bin/phpstan --configuration=${{ inputs.configuration }} analyse --error-format=checkstyle | cs2pr

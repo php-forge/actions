@@ -23,6 +23,11 @@ on:
         default: pcov
         required: false
         type: string
+      debug:
+        description: Display warnings in phpunit.
+        default:
+        required: false
+        type: string
       enable-concurrency:
         description: Enable concurrency.
         default: true
@@ -122,7 +127,7 @@ jobs:
           if [ -n "${{ inputs.exclude-group-phpunit }}" ]; then
             vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always --exclude-group ${{ inputs.exclude-group-phpunit }}
           else
-            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always
+            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always ${{ inputs.debug }}
           fi
 
       - name: Run tests with phpunit and generate coverage.
