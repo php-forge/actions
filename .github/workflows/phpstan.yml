@@ -41,12 +41,12 @@ on:
       os:
         description: Os to test, separated by comma.
         default: '["ubuntu-latest"]'
-        required: true
+        required: false
         type: string
       php:
         description: PHP versions to test, separated by comma.
         default: '["8.4"]'
-        required: true
+        required: false
         type: string
       tools:
         description: Tools to test, separated by comma.
