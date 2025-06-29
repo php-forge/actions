@@ -9,7 +9,7 @@ on:
         required: false
         type: string
       command-options:
-        description: Options for the roave-infection-static-analysis-plugin.
+        description: Options for the infection tool.
         default: --threads=2 --ignore-msi-with-no-mutations --only-covered
         required: false
         type: string
@@ -70,7 +70,7 @@ on:
         type: string
       tools:
         description: Tools to test, separated by comma.
-        default: composer:v2
+        default: infection:dev-master
         required: false
         type: string
     secrets:
@@ -138,15 +138,15 @@ jobs:
 
       - name: Run infection.
         run: |
-          vendor/bin/${{ inputs.command }} ${{ inputs.command-options }} ${{ inputs.phpstan && '--static-analysis-tool=phpstan' || '' }} ${{ inputs.framework-options }}
+          ${{ contains(inputs.tools, 'infection') && inputs.command || format('vendor/bin/{0}', inputs.command) }} ${{ inputs.command-options }} ${{ inputs.phpstan && '--static-analysis-tool=phpstan' || '' }} ${{ inputs.framework-options }}
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 
-      - name: Archive codeception results.
+      - name: Archive infection results.
         if: ${{ inputs.debug }}
         uses: actions/upload-artifact@v4
         with:
-          name: infection
+          name: infection-${{ matrix.php }}-${{ matrix.os }}
           path: ./infection.log
 
       - name: Download all workflow run artifacts.
