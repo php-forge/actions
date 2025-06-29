@@ -38,6 +38,11 @@ on:
         default:
         required: false
         type: string
+      framework-options:
+        description: Options for the framework.
+        default:
+        required: false
+        type: string
       ini-values:
         description: Initial values for PHP configuration.
         default: date.timezone='UTC'
@@ -51,6 +56,16 @@ on:
       php:
         description: PHP versions to test, separated by comma.
         default: '["8.4"]'
+        required: false
+        type: string
+      phpstan:
+        description: Run PHPStan and use it with Infection.
+        default: false
+        required: false
+        type: boolean
+      phpstan-configuration:
+        description: PHPStan configuration file.
+        default: phpstan.neon
         required: false
         type: string
       tools:
@@ -70,7 +85,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  roave-infection:
+  infection:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
@@ -93,6 +108,8 @@ jobs:
           ini-values: ${{ inputs.ini-values}}
           php-version: ${{ matrix.php }}
           tools: ${{ inputs.tools }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update composer.
         run: composer self-update ${{ inputs.composer-version }}
@@ -106,19 +123,32 @@ jobs:
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}
 
+      - name: Cache PHPStan results.
+        if: ${{ inputs.phpstan }}
+        uses: actions/cache@v4
+        with:
+          path: .phpstan/cache
+          key: phpstan-${{ runner.os }}-${{ hashFiles('phpstan.neon*') }}
+          restore-keys: |
+            phpstan-${{ runner.os }}-
+
+      - name: Run PHPStan (build cache).
+        if: ${{ inputs.phpstan }}
+        run: vendor/bin/phpstan --configuration=${{ inputs.phpstan-configuration }} analyse
+
       - name: Run infection.
         run: |
-          vendor/bin/${{ inputs.command }} ${{ inputs.command-options }}
+          vendor/bin/${{ inputs.command }} ${{ inputs.command-options }} ${{ inputs.phpstan && '--static-analysis-tool=phpstan' || '' }} ${{ inputs.framework-options }}
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 
-      - name: Archive codeception results
+      - name: Archive codeception results.
         if: ${{ inputs.debug }}
         uses: actions/upload-artifact@v4
         with:
           name: infection
           path: ./infection.log
 
-      - name: Download all workflow run artifacts
+      - name: Download all workflow run artifacts.
         if: ${{ inputs.debug }}
         uses: actions/download-artifact@v4
