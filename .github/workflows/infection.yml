@@ -33,6 +33,11 @@ on:
         default: false
         required: false
         type: boolean
+      devolopment:
+        description: Run in development mode.
+        default: false
+        required: false
+        type: boolean
       extensions:
         description: List of extensions to PHP.
         default:
@@ -70,7 +75,7 @@ on:
         type: string
       tools:
         description: Tools to test, separated by comma.
-        default: infection:dev-master
+        default:
         required: false
         type: string
     secrets:
@@ -119,6 +124,9 @@ jobs:
           if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
             composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
           fi
+          if [ "${{ inputs.devolopment }}" = 'true' ]; then
+            composer require --dev infection/infection:dev-master --prefer-dist --no-interaction --no-progress;
+          fi
 
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}
@@ -138,7 +146,7 @@ jobs:
 
       - name: Run infection.
         run: |
-          ${{ contains(inputs.tools, 'infection') && inputs.command || format('vendor/bin/{0}', inputs.command) }} ${{ inputs.command-options }} ${{ inputs.phpstan && '--static-analysis-tool=phpstan' || '' }} ${{ inputs.framework-options }}
+          vendor/bin/${{ inputs.command }} ${{ inputs.command-options }} ${{ inputs.phpstan && '--static-analysis-tool=phpstan' || '' }} ${{ inputs.framework-options }}
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 
