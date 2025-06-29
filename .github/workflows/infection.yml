@@ -33,7 +33,7 @@ on:
         default: false
         required: false
         type: boolean
-      devolopment:
+      development:
         description: Run in development mode.
         default: false
         required: false
@@ -124,7 +124,7 @@ jobs:
           if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
             composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
           fi
-          if [ "${{ inputs.devolopment }}" = 'true' ]; then
+          if [ "${{ inputs.development }}" = 'true' ]; then
             composer require --dev infection/infection:dev-master --prefer-dist --no-interaction --no-progress;
           fi
 
