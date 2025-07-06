@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       command-options:
-        description: Options for the infection tool.
+        description: Options for the Easy Coding Standard tool.
         default: check --ansi
         required: false
         type: string
@@ -18,13 +18,23 @@ on:
         default:
         required: false
         type: string
+      concurrency-group:
+        description: Concurrency group name.
+        default: ${{ github.workflow }}-${{ github.ref }}
+        required: false
+        type: string
+      enable-concurrency:
+        description: Enable concurrency.
+        default: true
+        required: false
+        type: boolean
       extensions:
         description: List of extensions to PHP.
         default:
         required: false
         type: string
       os:
-        description: Os to test, separated by comma.
+        description: Operating systems to test, separated by comma.
         default: '["ubuntu-latest"]'
         required: false
         type: string
@@ -49,13 +59,13 @@ on:
         description: GitHub token for composer.
         required: false
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   ecs:
     name: PHP ${{ matrix.php-version }}-${{ matrix.os }}
+
+    concurrency:
+      group:  ${{ matrix.os }}-${{ matrix.php-version }}-${{ inputs.concurrency-group }}
+      cancel-in-progress: ${{ inputs.enable-concurrency }}
 
     runs-on: ${{ matrix.os }}
 
