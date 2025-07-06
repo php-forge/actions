@@ -162,6 +162,7 @@ runs:
       run: Invoke-Expression "${{ steps.build-cmd-windows.outputs.command }}"
 
     - name: Upload coverage to Codecov.
+      if: inputs.coverage == 'true'
       uses: codecov/codecov-action@v4
       with:
         token: ${{ inputs.coverage-token }}

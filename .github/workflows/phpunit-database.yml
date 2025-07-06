@@ -22,7 +22,7 @@ on:
         description: Generate code coverage report.
         default: true
         required: false
-        type: string
+        type: boolean
       coverage-file:
         description: Coverage output file name.
         default: coverage.xml
