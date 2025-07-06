@@ -1,0 +1,82 @@
+name: PHP setup with composer.
+description: Setup PHP environment with composer and install dependencies.
+
+inputs:
+  auth-token:
+    description: GitHub auth token for composer.
+    default:
+    required: false
+    type: string
+  composer-command:
+    description: Composer command to run.
+    default: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+    required: false
+    type: string
+  composer-version:
+    description: Composer version to use.
+    default:
+    required: false
+    type: string
+  coverage:
+    description: Generate code coverage report.
+    default: pcov
+    required: false
+    type: string
+  extensions:
+    description: List of extensions to PHP.
+    default:
+    required: false
+    type: string
+  ini-values:
+    description: Initial values for PHP configuration.
+    default: date.timezone='UTC'
+    required: false
+    type: string
+  php:
+    description: PHP versions to test, separated by comma.
+    default: '["8.1","8.2","8.3","8.4"]'
+    required: false
+    type: string
+  tools:
+    description: Tools to test, separated by comma.
+    default:
+    required: false
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        coverage: ${{ inputs.coverage }}
+        extensions: ${{ inputs.extensions }}
+        ini-values: ${{ inputs.ini-values }}
+        php-version: ${{ inputs.php-version }}
+        tools: ${{ inputs.tools }}
+
+    - name: Update composer.
+      run: composer self-update ${{ inputs.composer-version }}
+
+    - name: Configure composer on linux.
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        if [ "${{ inputs.auth-token }}" != '' ]; then
+          composer config -g github-oauth.github.com ${{ inputs.auth-token }};
+        fi
+
+    - name: Configure composer on windows.
+      if: matrix.os == 'windows-latest'
+      run: |
+        if ($env:AUTH_TOKEN -ne '') {
+          composer config -g github-oauth.github.com $env:AUTH_TOKEN
+        }
+      env:
+        AUTH_TOKEN: ${{ inputs.auth-token }}
+
+    - name: Install dependencies
+      shell: bash
+      run: ${{ inputs.composer-command }}
