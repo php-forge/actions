@@ -157,7 +157,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           coverage: ${{ inputs.coverage }}
-          extensions: ${{ inputs.extensions}}
+          extensions: ${{ inputs.extensions }}
           ini-values: ${{ inputs.ini-values }}
           php-version: ${{ matrix.php }}
           tools: ${{ inputs.tools }}
