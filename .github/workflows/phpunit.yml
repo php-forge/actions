@@ -3,11 +3,6 @@ name: phpunit
 on:
   workflow_call:
     inputs:
-      concurrency-group:
-        description: Concurrency group name.
-        default: ${{ github.workflow }}-${{ github.ref }}
-        required: false
-        type: string
       composer-command:
         description: Composer command to run.
         default: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
@@ -18,14 +13,19 @@ on:
         default:
         required: false
         type: string
+      concurrency-group:
+        description: Concurrency group name.
+        default: ${{ github.workflow }}-${{ github.ref }}
+        required: false
+        type: string
       coverage:
         description: Generate code coverage report.
         default: pcov
         required: false
         type: string
-      debug:
-        description: Display warnings in phpunit.
-        default:
+      coverage-driver:
+        description: Code coverage driver to use (pcov, xdebug).
+        default: pcov
         required: false
         type: string
       enable-concurrency:
@@ -33,19 +33,9 @@ on:
         default: true
         required: false
         type: boolean
-      exclude-group-phpunit:
-        description: Exclude group from phpunit.
-        default:
-        required: false
-        type: string
       extensions:
         description: List of extensions to PHP.
         default:
-        required: false
-        type: string
-      ini-values:
-        description: Initial values for PHP configuration.
-        default: date.timezone='UTC'
         required: false
         type: string
       os:
@@ -53,7 +43,42 @@ on:
         default: '["ubuntu-latest","windows-latest"]'
         required: false
         type: string
-      php:
+      phpunit-configuration:
+        description: PHPUnit configuration file.
+        default: ""
+        required: false
+        type: string
+      phpunit-debug:
+        description: Display warnings in phpunit.
+        default: ""
+        required: false
+        type: string
+      phpunit-exclude-group:
+        description: Exclude group from phpunit.
+        default:
+        required: false
+        type: string
+      phpunit-group:
+        description: Include specific group in phpunit.
+        default:
+        required: false
+        type: string
+      phpunit-path:
+        description: Path to PHPUnit executable.
+        default: vendor/bin/phpunit
+        required: false
+        type: string
+      phpunit-test-suite:
+        description: Specific test suite to run.
+        default: ""
+        required: false
+        type: string
+      php-ini-values:
+        description: Initial values for PHP configuration.
+        default: date.timezone='UTC'
+        required: false
+        type: string
+      php-version:
         description: PHP versions to test, separated by comma.
         default: '["8.1","8.2","8.3","8.4"]'
         required: false
@@ -92,83 +117,28 @@ jobs:
       - name: Checkout.
         uses: actions/checkout@v4
 
-      - name: Install PHP.
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP Environment.
+        uses: php-forge/actions/actions/php-setup@main
         with:
-          coverage: ${{ inputs.coverage }}
+          auth-token: ${{ secrets.AUTH_TOKEN }}
+          composer-command: ${{ inputs.composer-command }}
+          composer-version: ${{ inputs.composer-version }}
+          coverage-driver: ${{ inputs.coverage-driver }}
           extensions: ${{ inputs.extensions }}
-          ini-values: ${{ inputs.ini-values }}
-          php-version: ${{ matrix.php }}
+          ini-values: ${{ inputs.php-ini-values }}
+          php-version: ${{ matrix.php-version }}
           tools: ${{ inputs.tools }}
 
-      - name: Update composer.
-        run: composer self-update ${{ inputs.composer-version }}
-
-      - name: Configure composer on linux.
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
-            composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
-          fi
-
-      - name: Configure composer on windows.
-        if: matrix.os == 'windows-latest'
-        run: |
-          if ($env:AUTH_TOKEN -ne '') {
-            composer config -g github-oauth.github.com $env:AUTH_TOKEN
-          }
-        env:
-          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
-
-      - name: Install dependencies with composer.
-        run: ${{ inputs.composer-command }}
-
-      - name: Run tests on linux with phpunit and generate coverage.
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          PHPUNIT_CMD="vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always"
-
-          if [ -n "${{ inputs.group-phpunit }}" ]; then
-            PHPUNIT_CMD="$PHPUNIT_CMD --group ${{ inputs.group-phpunit }}"
-          fi
-
-          if [ -n "${{ inputs.exclude-group-phpunit }}" ]; then
-            PHPUNIT_CMD="$PHPUNIT_CMD --exclude-group ${{ inputs.exclude-group-phpunit }}"
-          fi
-
-          if [ -n "${{ inputs.debug }}" ]; then
-            PHPUNIT_CMD="$PHPUNIT_CMD ${{ inputs.debug }}"
-          fi
-
-          eval "$PHPUNIT_CMD"
-
-      - name: Run tests on windows with phpunit and generate coverage.
-        if: matrix.os == 'windows-latest'
-        run: |
-          $phpunitCmd = "vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always"
-
-          if ($env:GROUP) {
-            $phpunitCmd += " --group $env:GROUP"
-          }
-
-          if ($env:EXCLUDE_GROUP) {
-            $phpunitCmd += " --exclude-group $env:EXCLUDE_GROUP"
-          }
-
-          if ($env:DEBUG_FLAG) {
-            $phpunitCmd += " $env:DEBUG_FLAG"
-          }
-
-          Invoke-Expression $phpunitCmd
-        env:
-          GROUP: ${{ inputs.group-phpunit }}
-          EXCLUDE_GROUP: ${{ inputs.exclude-group-phpunit }}
-          DEBUG_FLAG: ${{ inputs.debug }}
-
-
-      - name: Upload coverage to Codecov.
-        if: matrix.php == '8.1'
-        uses: codecov/codecov-action@v4
+      - name: Run PHPUnit tests with coverage.
+        uses: php-forge/actions/actions/phpunit@main
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          configuration: ${{ inputs.phpunit-configuration }}
+          coverage-file: ${{ inputs.coverage-file }}
+          coverage-format: ${{ inputs.coverage-format }}
+          coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          coverage: ${{ inputs.coverage }}
+          debug: ${{ inputs.phpunit-debug }}
+          exclude-group: ${{ inputs.phpunit-exclude-group }}
+          group: ${{ inputs.phpunit-group }}
+          path: ${{ inputs.phpunit-path }}
+          test-suite: ${{ inputs.phpunit-test-suite }}
