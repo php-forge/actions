@@ -74,7 +74,7 @@ on:
         default:
         required: false
         type: string
-      group:
+      group-phpunit:
         description: Include specific group in phpunit.
         default:
         required: false
@@ -193,19 +193,19 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           $phpunitCmd = "vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always"
-          
+
           if ($env:GROUP) {
             $phpunitCmd += " --group $env:GROUP"
           }
-          
+
           if ($env:EXCLUDE_GROUP) {
             $phpunitCmd += " --exclude-group $env:EXCLUDE_GROUP"
           }
-          
+
           if ($env:DEBUG_FLAG) {
             $phpunitCmd += " $env:DEBUG_FLAG"
           }
-          
+
           Invoke-Expression $phpunitCmd
         env:
           GROUP: ${{ inputs.group-phpunit }}
