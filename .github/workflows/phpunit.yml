@@ -140,7 +140,7 @@ jobs:
             PHPUNIT_CMD="$PHPUNIT_CMD ${{ inputs.debug }}"
           fi
 
-          eval $PHPUNIT_CMD
+          eval "$PHPUNIT_CMD"
 
       - name: Run tests on windows with phpunit and generate coverage.
         if: matrix.os == 'windows-latest'
