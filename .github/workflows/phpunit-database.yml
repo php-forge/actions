@@ -84,11 +84,6 @@ on:
         default:
         required: false
         type: string
-      ini-values:
-        description: Initial values for PHP configuration.
-        default: date.timezone='UTC'
-        required: false
-        type: string
       os:
         description: Os to test, separated by comma.
         default: '["ubuntu-latest","windows-latest"]'
@@ -122,6 +117,11 @@ on:
       phpunit-test-suite:
         description: Specific test suite to run.
         default: ""
+        required: false
+        type: string
+      php-ini-values:
+        description: Initial values for PHP configuration.
+        default: date.timezone='UTC'
         required: false
         type: string
       php-version:
@@ -194,7 +194,7 @@ jobs:
           composer-version: ${{ inputs.composer-version }}
           coverage-driver: ${{ inputs.coverage-driver }}
           extensions: ${{ inputs.extensions }}
-          ini-values: ${{ inputs.ini-values }}
+          ini-values: ${{ inputs.php-ini-values }}
           php-version: ${{ matrix.php-version }}
           tools: ${{ inputs.tools }}
 
