@@ -1,4 +1,4 @@
-name: phpunit
+name: phpunit-database
 
 on:
   workflow_call:
@@ -21,6 +21,37 @@ on:
       coverage:
         description: Generate code coverage report.
         default: pcov
+        required: false
+        type: string
+      database-env:
+        description: Database environment variables (JSON).
+        default: "{}"
+        required: false
+        type: string
+      database-health-cmd:
+        description: Database health check command.
+        required: true
+        type: string
+      database-health-retries:
+        description: Database health check retries.
+        default: 5
+        required: false
+        type: string
+      database-image:
+        description: Docker image for database.
+        required: true
+        type: string
+      database-port:
+        description: Database port.
+        required: true
+        type: string
+      database-type:
+        description: Database type (mysql, pgsql, mssql, oracle).
+        required: true
+        type: string
+      database-versions:
+        description: Database versions to test.
+        default: '["latest"]'
         required: false
         type: string
       debug:
@@ -53,9 +84,14 @@ on:
         default: '["ubuntu-latest","windows-latest"]'
         required: false
         type: string
-      php:
+      php-version:
         description: PHP versions to test, separated by comma.
         default: '["8.1","8.2","8.3","8.4"]'
+        required: false
+        type: string
+      setup-commands:
+        description: Additional setup commands after database starts
+        default: ""
         required: false
         type: string
       tools:
@@ -73,11 +109,11 @@ on:
         required: false
 
 jobs:
-  phpunit:
-    name: PHP ${{ matrix.php }}-${{ matrix.os }}
+  database:
+    name: PHP ${{ matrix.php-version }}-${{ inputs.database-type }}-${{ matrix.database-version }}
 
     concurrency:
-      group:  ${{ matrix.os }}-${{ matrix.php }}-${{ inputs.concurrency-group }}
+      group: ${{ matrix.os }}-${{ matrix.php-version }}-${{ inputs.database-type }}-${{ matrix.database-version }}-${{ inputs.concurrency-group }}
       cancel-in-progress: ${{ inputs.enable-concurrency }}
 
     runs-on: ${{ matrix.os }}
@@ -86,42 +122,48 @@ jobs:
       fail-fast: false
       matrix:
         os: ${{ fromJson(inputs.os) }}
-        php: ${{ fromJson(inputs.php) }}
+        php-version: ${{ fromJson(inputs.php-version) }}
+        database-version: ${{ fromJson(inputs.database-versions) }}
+
+    services:
+      database:
+        image: ${{ format('{0}:{1}', inputs.database-image, matrix.database-version) }}
+        ports:
+          - ${{ format('{0}:{0}', inputs.database-port) }}
+        env: ${{ fromJson(inputs.database-env) }}
+        options: >-
+          --name=database
+          --health-cmd="${{ inputs.database-health-cmd }}"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=${{ inputs.database-health-retries }}
 
     steps:
       - name: Checkout.
         uses: actions/checkout@v4
 
-      - name: Install PHP.
-        uses: shivammathur/setup-php@v2
+      - name: Setup Database (MSSQL).
+        if: inputs.database-type == 'mssql'
+        run: |
+          # Wait a bit more for MSSQL to be fully ready
+          sleep 10
+          docker exec -i database /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA
+
+      - name: Additional Database Setup.
+        if: inputs.setup-commands != ''
+        run: ${{ inputs.setup-commands }}
+
+      - name: Setup PHP Environment.
+        uses: ./.github/actions/php-setup
         with:
+          php-version: ${{ matrix.php-version }}
+          composer-version: ${{ inputs.composer-version }}
+          composer-command: ${{ inputs.composer-command }}
           coverage: ${{ inputs.coverage }}
           extensions: ${{ inputs.extensions }}
           ini-values: ${{ inputs.ini-values }}
-          php-version: ${{ matrix.php }}
           tools: ${{ inputs.tools }}
-
-      - name: Update composer.
-        run: composer self-update ${{ inputs.composer-version }}
-
-      - name: Configure composer on linux.
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
-            composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
-          fi
-
-      - name: Configure composer on windows.
-        if: matrix.os == 'windows-latest'
-        run: |
-          if ($env:AUTH_TOKEN -ne '') {
-            composer config -g github-oauth.github.com $env:AUTH_TOKEN
-          }
-        env:
-          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
-
-      - name: Install dependencies with composer.
-        run: ${{ inputs.composer-command }}
+          auth-token: ${{ secrets.AUTH_TOKEN }}
 
       - name: Run tests on linux with phpunit and generate coverage.
         if: matrix.os == 'ubuntu-latest'
@@ -135,14 +177,17 @@ jobs:
       - name: Run tests on windows with phpunit and generate coverage.
         if: matrix.os == 'windows-latest'
         run: |
-          {% if inputs.exclude-group-phpunit %}
-            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always --exclude-group ${{ inputs.exclude-group-phpunit }}
-          {% else %}
-            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always
-          {% endif %}
+          if ($env:EXCLUDE_GROUP -ne '') {
+            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always --exclude-group $env:EXCLUDE_GROUP
+          } else {
+            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always $env:DEBUG_FLAG
+          }
+        env:
+          EXCLUDE_GROUP: ${{ inputs.exclude-group-phpunit }}
+          DEBUG_FLAG: ${{ inputs.debug }}
 
       - name: Upload coverage to Codecov.
-        if: matrix.php == '8.1'
+        if: matrix.php-version == '8.1'
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
