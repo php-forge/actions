@@ -20,7 +20,7 @@ on:
         type: string
       coverage:
         description: Generate code coverage report.
-        default: pcov
+        default: true
         required: false
         type: string
       coverage-file:
@@ -94,6 +94,11 @@ on:
         default: ""
         required: false
         type: string
+      phpunit-debug:
+        description: Display warnings in phpunit.
+        default: ""
+        required: false
+        type: string
       phpunit-exclude-group:
         description: Exclude group from phpunit.
         default:
@@ -107,6 +112,11 @@ on:
       phpunit-path:
         description: Path to PHPUnit executable.
         default: vendor/bin/phpunit
+        required: false
+        type: string
+      phpunit-test-suite:
+        description: Specific test suite to run.
+        default: ""
         required: false
         type: string
       php-version:
@@ -191,7 +201,8 @@ jobs:
           coverage-format: ${{ inputs.coverage-format }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
           coverage: ${{ inputs.coverage }}
-          debug: ${{ inputs.debug }}
+          debug: ${{ inputs.phpunit-debug }}
           exclude-group: ${{ inputs.phpunit-exclude-group }}
           group: ${{ inputs.phpunit-group }}
           path: ${{ inputs.phpunit-path }}
+          test-suite: ${{ inputs.phpunit-test-suite }}

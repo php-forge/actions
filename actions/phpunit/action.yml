@@ -151,12 +151,12 @@ runs:
         echo "command=$phpunitCmd" >> $env:GITHUB_OUTPUT
         Write-Host "PHPUnit command: $phpunitCmd"
 
-    - name: Run PHPUnit tests (Linux).
+    - name: Run PHPUnit tests (linux).
       shell: bash
       if: runner.os != 'Windows'
       run: ${{ steps.build-cmd-unix.outputs.command }}
 
-    - name: Run PHPUnit tests (Windows).
+    - name: Run PHPUnit tests (windows).
       shell: pwsh
       if: runner.os == 'Windows'
       run: Invoke-Expression "${{ steps.build-cmd-windows.outputs.command }}"
