@@ -154,7 +154,7 @@ jobs:
         run: ${{ inputs.setup-commands }}
 
       - name: Install PHP.
-        uses: shivammathur/setup-php@develop
+        uses: shivammathur/setup-php@v2
         with:
           coverage: ${{ inputs.coverage }}
           extensions: ${{ inputs.extensions}}
@@ -165,14 +165,14 @@ jobs:
       - name: Update composer.
         run: composer self-update ${{ inputs.composer-version }}
 
-      - name: Configure composer linux.
+      - name: Configure composer on linux.
         if: matrix.os == 'ubuntu-latest'
         run: |
           if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
             composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
           fi
 
-      - name: Configure composer windows.
+      - name: Configure composer on windows.
         if: matrix.os == 'windows-latest'
         run: |
           if ($env:AUTH_TOKEN -ne '') {
