@@ -109,10 +109,10 @@ on:
 
 jobs:
   phpunit:
-    name: PHP ${{ matrix.php }}-${{ matrix.os }}
+    name: PHP ${{ matrix.php-version }}-${{ matrix.os }}
 
     concurrency:
-      group:  ${{ matrix.os }}-${{ matrix.php }}-${{ inputs.concurrency-group }}
+      group:  ${{ matrix.os }}-${{ matrix.php-version }}-${{ inputs.concurrency-group }}
       cancel-in-progress: ${{ inputs.enable-concurrency }}
 
     runs-on: ${{ matrix.os }}
@@ -121,7 +121,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ${{ fromJson(inputs.os) }}
-        php: ${{ fromJson(inputs.php) }}
+        php-version: ${{ fromJson(inputs.php-version) }}
 
     steps:
       - name: Checkout.
