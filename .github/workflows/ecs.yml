@@ -3,6 +3,11 @@ name: ecs
 on:
   workflow_call:
     inputs:
+      command-options:
+        description: Options for the infection tool.
+        default: check --ansi
+        required: false
+        type: string
       composer-command:
         description: Composer command to run.
         default: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
@@ -18,19 +23,24 @@ on:
         default:
         required: false
         type: string
-      ini-values:
-        description: Initial values for PHP configuration.
-        default: date.timezone='UTC'
-        required: false
-        type: string
       os:
         description: Os to test, separated by comma.
         default: '["ubuntu-latest"]'
         required: false
         type: string
-      php:
+      php-ini-values:
+        description: Initial values for PHP configuration.
+        default: date.timezone='UTC'
+        required: false
+        type: string
+      php-version:
         description: PHP versions to test, separated by comma.
         default: '["8.4"]'
+        required: false
+        type: string
+      tools:
+        description: Tools to test, separated by comma.
+        default:
         required: false
         type: string
 
@@ -45,7 +55,7 @@ concurrency:
 
 jobs:
   ecs:
-    name: PHP ${{ matrix.php }}-${{ matrix.os }}
+    name: PHP ${{ matrix.php-version }}-${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
 
@@ -53,32 +63,23 @@ jobs:
       fail-fast: false
       matrix:
         os: ${{ fromJson(inputs.os) }}
-        php: ${{ fromJson(inputs.php) }}
+        php-version: ${{ fromJson(inputs.php-version) }}
 
     steps:
       - name: Checkout.
         uses: actions/checkout@v4
 
-      - name: Install PHP.
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP Environment.
+        uses: php-forge/actions/actions/php-setup@main
         with:
-          coverage: none
-          extensions: ${{ inputs.extensions}}
-          ini-values: ${{ inputs.ini-values }}
-          php-version: ${{ matrix.php }}
+          auth-token: ${{ secrets.AUTH_TOKEN }}
+          composer-command: ${{ inputs.composer-command }}
+          composer-version: ${{ inputs.composer-version }}
+          coverage-driver: none
+          extensions: ${{ inputs.extensions }}
+          ini-values: ${{ inputs.php-ini-values }}
+          php-version: ${{ matrix.php-version }}
+          tools: ${{ inputs.tools }}
 
-      - name: Update composer.
-        run: composer self-update ${{ inputs.composer-version }}
-
-      - name: Configure composer linux.
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
-            composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
-          fi
-
-      - name: Install dependencies with composer.
-        run: ${{ inputs.composer-command }}
-
-      - name: Run easy-coding-standard.
-        run: vendor/bin/ecs check --ansi
+      - name: Run Easy Coding Standard.
+        run: vendor/bin/ecs ${{ inputs.command-options }}
