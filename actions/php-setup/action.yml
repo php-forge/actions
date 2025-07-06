@@ -62,7 +62,7 @@ runs:
       shell: bash
       run: composer self-update ${{ inputs.composer-version }}
 
-    - name: Configure composer on (Linux/macOS).
+    - name: Configure composer on (Linux).
       shell: bash
       if: runner.os == 'Linux'
       run: |

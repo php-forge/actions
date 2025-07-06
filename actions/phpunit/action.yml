@@ -58,11 +58,6 @@ inputs:
     required: false
     type: string
 
-outputs:
-  coverage-file:
-    description: Path to the generated coverage file.
-    value: ${{ steps.coverage.outputs.file }}
-
 runs:
   using: composite
   steps:

@@ -184,7 +184,7 @@ jobs:
           tools: ${{ inputs.tools }}
 
       - name: Run PHPUnit tests with coverage.
-        uses: ./composite-actions/actions/phpunit
+        uses: php-forge/actions/actions/phpunit@main
         with:
           configuration: ${{ inputs.phpunit-configuration }}
           coverage-file: ${{ inputs.coverage-file }}
