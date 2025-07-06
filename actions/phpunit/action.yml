@@ -1,0 +1,169 @@
+name: PHPUnit Test Runner.
+description: Run PHPUnit tests with coverage and configurable options.
+
+inputs:
+  configuration:
+    description: PHPUnit configuration file.
+    default: ""
+    required: false
+    type: string
+  coverage:
+    description: Generate code coverage report.
+    default: true
+    required: false
+    type: boolean
+  coverage-file:
+    description: Coverage output file name.
+    default: coverage.xml
+    required: false
+    type: string
+  coverage-format:
+    description: Coverage report format (clover, html, xml).
+    default: clover
+    required: false
+    type: string
+  coverage-token:
+    description: Codecov token for uploading coverage.
+    default: ""
+    required: false
+    type: string
+  debug:
+    description: Display warnings in phpunit.
+    default: ""
+    required: false
+    type: string
+  exclude-group:
+    description: Exclude group from phpunit.
+    default: ""
+    required: false
+    type: string
+  group:
+    description: Include specific group in phpunit.
+    default: ""
+    required: false
+    type: string
+  path:
+    description: Path to PHPUnit executable.
+    default: vendor/bin/phpunit
+    required: false
+    type: string
+  test-suite:
+    description: Specific test suite to run.
+    default: ""
+    required: false
+    type: string
+  additional-args:
+    description: Additional PHPUnit arguments.
+    default: ""
+    required: false
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - name: Build PHPUnit command (Linux).
+      shell: bash
+      if: runner.os != 'Windows'
+      id: build-cmd-unix
+      run: |
+        PHPUNIT_CMD="${{ inputs.path }} --colors=always"
+
+        # Add coverage if enabled
+        if [ "${{ inputs.coverage }}" = "true" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD --coverage-${{ inputs.coverage-format }}=${{ inputs.coverage-file }}"
+        fi
+
+        # Add configuration file
+        if [ -n "${{ inputs.configuration }}" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD --configuration ${{ inputs.configuration }}"
+        fi
+
+        # Add test suite
+        if [ -n "${{ inputs.test-suite }}" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD --testsuite ${{ inputs.test-suite }}"
+        fi
+
+        # Add group filter
+        if [ -n "${{ inputs.group }}" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD --group ${{ inputs.group }}"
+        fi
+
+        # Add exclude group filter
+        if [ -n "${{ inputs.exclude-group }}" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD --exclude-group ${{ inputs.exclude-group }}"
+        fi
+
+        # Add debug flags
+        if [ -n "${{ inputs.debug }}" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD ${{ inputs.debug }}"
+        fi
+
+        # Add additional arguments
+        if [ -n "${{ inputs.additional-args }}" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD ${{ inputs.additional-args }}"
+        fi
+
+        echo "command=$PHPUNIT_CMD" >> $GITHUB_OUTPUT
+        echo "PHPUnit command: $PHPUNIT_CMD"
+
+    - name: Build PHPUnit command (Windows).
+      shell: pwsh
+      if: runner.os == 'Windows'
+      id: build-cmd-windows
+      run: |
+        $phpunitCmd = "${{ inputs.path }} --colors=always"
+
+        # Add coverage if enabled
+        if ("${{ inputs.coverage }}" -eq "true") {
+          $phpunitCmd += " --coverage-${{ inputs.coverage-format }}=${{ inputs.coverage-file }}"
+        }
+
+        # Add configuration file
+        if ("${{ inputs.configuration }}" -ne "") {
+          $phpunitCmd += " --configuration ${{ inputs.configuration }}"
+        }
+
+        # Add test suite
+        if ("${{ inputs.test-suite }}" -ne "") {
+          $phpunitCmd += " --testsuite ${{ inputs.test-suite }}"
+        }
+
+        # Add group filter
+        if ("${{ inputs.group }}" -ne "") {
+          $phpunitCmd += " --group ${{ inputs.group }}"
+        }
+
+        # Add exclude group filter
+        if ("${{ inputs.exclude-group }}" -ne "") {
+          $phpunitCmd += " --exclude-group ${{ inputs.exclude-group }}"
+        }
+
+        # Add debug flags
+        if ("${{ inputs.debug }}" -ne "") {
+          $phpunitCmd += " ${{ inputs.debug }}"
+        }
+
+        # Add additional arguments
+        if ("${{ inputs.additional-args }}" -ne "") {
+          $phpunitCmd += " ${{ inputs.additional-args }}"
+        }
+
+        echo "command=$phpunitCmd" >> $env:GITHUB_OUTPUT
+        Write-Host "PHPUnit command: $phpunitCmd"
+
+    - name: Run PHPUnit tests on linux.
+      shell: bash
+      if: runner.os != 'Windows'
+      run: ${{ steps.build-cmd-unix.outputs.command }}
+
+    - name: Run PHPUnit tests on windows.
+      shell: pwsh
+      if: runner.os == 'Windows'
+      run: Invoke-Expression "${{ steps.build-cmd-windows.outputs.command }}"
+
+    - name: Upload coverage to Codecov.
+      if: inputs.coverage == 'true'
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ inputs.coverage-token }}
+        file: ./${{ inputs.coverage-file }}

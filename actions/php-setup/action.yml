@@ -17,8 +17,8 @@ inputs:
     default:
     required: false
     type: string
-  coverage:
-    description: Generate code coverage report.
+  coverage-driver:
+    description: Code coverage driver to use (pcov, xdebug).
     default: pcov
     required: false
     type: string
@@ -52,7 +52,7 @@ runs:
     - name: Install PHP
       uses: shivammathur/setup-php@v2
       with:
-        coverage: ${{ inputs.coverage }}
+        coverage: ${{ inputs.coverage-driver }}
         extensions: ${{ inputs.extensions }}
         ini-values: ${{ inputs.ini-values }}
         php-version: ${{ inputs.php-version }}
