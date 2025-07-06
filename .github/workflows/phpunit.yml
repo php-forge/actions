@@ -28,6 +28,16 @@ on:
         default: pcov
         required: false
         type: string
+      coverage-file:
+        description: Coverage output file name.
+        default: coverage.xml
+        required: false
+        type: string
+      coverage-format:
+        description: Coverage report format (clover, html, xml).
+        default: clover
+        required: false
+        type: string
       enable-concurrency:
         description: Enable concurrency.
         default: true
