@@ -123,7 +123,7 @@ jobs:
       - name: Install dependencies with composer.
         run: ${{ inputs.composer-command }}
 
-      - name: Run tests with phpunit and generate coverage.
+      - name: Run tests on linux with phpunit and generate coverage.
         if: matrix.os == 'ubuntu-latest'
         run: |
           if [ -n "${{ inputs.exclude-group-phpunit }}" ]; then
@@ -132,7 +132,7 @@ jobs:
             vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always ${{ inputs.debug }}
           fi
 
-      - name: Run tests with phpunit and generate coverage.
+      - name: Run tests on windows with phpunit and generate coverage.
         if: matrix.os == 'windows-latest'
         run: |
           {% if inputs.exclude-group-phpunit %}
