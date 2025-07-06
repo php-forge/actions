@@ -19,7 +19,7 @@ on:
         required: false
         type: string
       coverage:
-        description: Generate code coverage report.
+        description: Enable code coverage report (true/false).
         default: true
         required: false
         type: boolean
