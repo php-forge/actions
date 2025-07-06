@@ -23,6 +23,11 @@ on:
         default: true
         required: false
         type: boolean
+      coverage-driver:
+        description: Code coverage driver to use (pcov, xdebug).
+        default: pcov
+        required: false
+        type: string
       coverage-file:
         description: Coverage output file name.
         default: coverage.xml
@@ -187,7 +192,7 @@ jobs:
           auth-token: ${{ secrets.AUTH_TOKEN }}
           composer-command: ${{ inputs.composer-command }}
           composer-version: ${{ inputs.composer-version }}
-          coverage: ${{ inputs.coverage }}
+          coverage-driver: ${{ inputs.coverage-driver }}
           extensions: ${{ inputs.extensions }}
           ini-values: ${{ inputs.ini-values }}
           php-version: ${{ matrix.php-version }}
