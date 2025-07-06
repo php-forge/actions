@@ -62,7 +62,7 @@ runs:
       shell: bash
       run: composer self-update ${{ inputs.composer-version }}
 
-    - name: Configure composer on linux.
+    - name: Configure composer on (Linux/macOS).
       shell: bash
       if: runner.os == 'Linux'
       run: |
@@ -70,7 +70,7 @@ runs:
           composer config -g github-oauth.github.com ${{ inputs.auth-token }};
         fi
 
-    - name: Configure composer on windows.
+    - name: Configure composer on (Windows).
       shell: pwsh
       if: runner.os == 'Windows'
       run: |
