@@ -84,7 +84,7 @@ on:
         default: '["ubuntu-latest","windows-latest"]'
         required: false
         type: string
-      php:
+      php-version:
         description: PHP versions to test, separated by comma.
         default: '["8.1","8.2","8.3","8.4"]'
         required: false
@@ -110,10 +110,10 @@ on:
 
 jobs:
   database:
-    name: PHP ${{ matrix.php }}-${{ inputs.database-type }}-${{ matrix.database-version }}
+    name: PHP ${{ matrix.php-version }}-${{ inputs.database-type }}-${{ matrix.database-version }}
 
     concurrency:
-      group: ${{ matrix.os }}-${{ matrix.php }}-${{ inputs.database-type }}-${{ matrix.database-version }}-${{ inputs.concurrency-group }}
+      group: ${{ matrix.os }}-${{ matrix.php-version }}-${{ inputs.database-type }}-${{ matrix.database-version }}-${{ inputs.concurrency-group }}
       cancel-in-progress: ${{ inputs.enable-concurrency }}
 
     runs-on: ${{ matrix.os }}
@@ -122,7 +122,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ${{ fromJson(inputs.os) }}
-        php: ${{ fromJson(inputs.php) }}
+        php-version: ${{ fromJson(inputs.php-version) }}
         database-version: ${{ fromJson(inputs.database-versions) }}
 
     services:
@@ -142,21 +142,21 @@ jobs:
       - name: Checkout.
         uses: actions/checkout@v4
 
-      - name: Setup Database (MSSQL)
+      - name: Setup Database (MSSQL).
         if: inputs.database-type == 'mssql'
         run: |
           # Wait a bit more for MSSQL to be fully ready
           sleep 10
           docker exec -i database /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA
 
-      - name: Additional Database Setup
+      - name: Additional Database Setup.
         if: inputs.setup-commands != ''
         run: ${{ inputs.setup-commands }}
 
-      - name: Setup PHP Environment
+      - name: Setup PHP Environment.
         uses: ./.github/actions/php-setup
         with:
-          php-version: ${{ matrix.php }}
+          php-version: ${{ matrix.php-version }}
           composer-version: ${{ inputs.composer-version }}
           composer-command: ${{ inputs.composer-command }}
           coverage: ${{ inputs.coverage }}
