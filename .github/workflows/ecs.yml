@@ -34,7 +34,7 @@ on:
         required: false
         type: string
       os:
-        description: Os to test, separated by comma.
+        description: Operating systems to test, separated by comma.
         default: '["ubuntu-latest"]'
         required: false
         type: string
