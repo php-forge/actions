@@ -187,7 +187,7 @@ jobs:
           DEBUG_FLAG: ${{ inputs.debug }}
 
       - name: Upload coverage to Codecov.
-        if: matrix.php == '8.1'
+        if: matrix.php-version == '8.1'
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

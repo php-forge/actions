@@ -62,14 +62,14 @@ runs:
       run: composer self-update ${{ inputs.composer-version }}
 
     - name: Configure composer on linux.
-      if: matrix.os == 'ubuntu-latest'
+      if: runner.os == 'Linux'
       run: |
         if [ "${{ inputs.auth-token }}" != '' ]; then
           composer config -g github-oauth.github.com ${{ inputs.auth-token }};
         fi
 
     - name: Configure composer on windows.
-      if: matrix.os == 'windows-latest'
+      if: runner.os == 'Windows'
       run: |
         if ($env:AUTH_TOKEN -ne '') {
           composer config -g github-oauth.github.com $env:AUTH_TOKEN
