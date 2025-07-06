@@ -74,6 +74,11 @@ on:
         default:
         required: false
         type: string
+      group-phpunit:
+        description: Include specific group in phpunit.
+        default:
+        required: false
+        type: string
       ini-values:
         description: Initial values for PHP configuration.
         default: date.timezone='UTC'
@@ -168,21 +173,42 @@ jobs:
       - name: Run tests on linux with phpunit and generate coverage.
         if: matrix.os == 'ubuntu-latest'
         run: |
-          if [ -n "${{ inputs.exclude-group-phpunit }}" ]; then
-            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always --exclude-group ${{ inputs.exclude-group-phpunit }}
-          else
-            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always ${{ inputs.debug }}
+          PHPUNIT_CMD="vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always"
+
+          if [ -n "${{ inputs.group-phpunit }}" ]; then
+            PHPUNIT_CMD="$PHPUNIT_CMD --group ${{ inputs.group-phpunit }}"
           fi
+
+          if [ -n "${{ inputs.exclude-group-phpunit }}" ]; then
+            PHPUNIT_CMD="$PHPUNIT_CMD --exclude-group ${{ inputs.exclude-group-phpunit }}"
+          fi
+
+          if [ -n "${{ inputs.debug }}" ]; then
+            PHPUNIT_CMD="$PHPUNIT_CMD ${{ inputs.debug }}"
+          fi
+
+          eval $PHPUNIT_CMD
 
       - name: Run tests on windows with phpunit and generate coverage.
         if: matrix.os == 'windows-latest'
         run: |
-          if ($env:EXCLUDE_GROUP -ne '') {
-            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always --exclude-group $env:EXCLUDE_GROUP
-          } else {
-            vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always $env:DEBUG_FLAG
+          $phpunitCmd = "vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always"
+
+          if ($env:GROUP) {
+            $phpunitCmd += " --group $env:GROUP"
           }
+
+          if ($env:EXCLUDE_GROUP) {
+            $phpunitCmd += " --exclude-group $env:EXCLUDE_GROUP"
+          }
+
+          if ($env:DEBUG_FLAG) {
+            $phpunitCmd += " $env:DEBUG_FLAG"
+          }
+
+          Invoke-Expression $phpunitCmd
         env:
+          GROUP: ${{ inputs.group-phpunit }}
           EXCLUDE_GROUP: ${{ inputs.exclude-group-phpunit }}
           DEBUG_FLAG: ${{ inputs.debug }}
 
