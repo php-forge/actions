@@ -159,7 +159,7 @@ jobs:
         run: ${{ inputs.setup-commands }}
 
       - name: Setup PHP Environment.
-        uses: ./.github/actions/php-setup
+        uses: php-forge/actions/.github/actions/php-setup
         with:
           php-version: ${{ matrix.php-version }}
           composer-version: ${{ inputs.composer-version }}
