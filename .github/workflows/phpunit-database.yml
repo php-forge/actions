@@ -167,13 +167,6 @@ jobs:
       - name: Checkout.
         uses: actions/checkout@v4
 
-      - name: Setup Database (MSSQL).
-        if: inputs.database-type == 'mssql'
-        run: |
-          # Wait a bit more for MSSQL to be fully ready
-          sleep 10
-          docker exec -i database /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA
-
       - name: Additional Database Setup.
         if: inputs.setup-commands != ''
         run: ${{ inputs.setup-commands }}
