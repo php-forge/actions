@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       command-options:
-        description: Options for the infection tool.
+        description: Options for the Composer Require Checker tool.
         default:
         required: false
         type: string

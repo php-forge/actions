@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       command-options:
-        description: Options for the infection tool.
+        description: Options for the PHPStan tool.
         default: analyse --error-format=checkstyle | cs2pr
         required: false
         type: string
