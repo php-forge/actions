@@ -23,6 +23,16 @@ on:
         default:
         required: false
         type: string
+      concurrency-group:
+        description: Concurrency group name.
+        default: ${{ github.workflow }}-${{ github.ref }}
+        required: false
+        type: string
+      enable-concurrency:
+        description: Enable concurrency.
+        default: true
+        required: false
+        type: boolean
       coverage:
         description: Generate code coverage report.
         default: pcov
@@ -43,9 +53,9 @@ on:
         default:
         required: false
         type: string
-      ini-values:
-        description: Initial values for PHP configuration.
-        default: date.timezone='UTC'
+      hook:
+        description: Command to run before PHP setup.
+        default: ""
         required: false
         type: string
       os:
@@ -53,7 +63,12 @@ on:
         default: '["ubuntu-latest"]'
         required: false
         type: string
-      php:
+      php-ini-values:
+        description: Initial values for PHP configuration.
+        default: date.timezone='UTC'
+        required: false
+        type: string
+      php-version:
         description: PHP versions to test, separated by comma.
         default: '["8.4"]'
         required: false
@@ -80,13 +95,13 @@ on:
       STRYKER_DASHBOARD_API_KEY:
         required: true
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   infection:
-    name: PHP ${{ matrix.php }}-${{ matrix.os }}
+    name: PHP ${{ matrix.php-version }}-${{ matrix.os }}
+
+    concurrency:
+      group:  ${{ matrix.os }}-${{ matrix.php-version }}-${{ inputs.concurrency-group }}
+      cancel-in-progress: ${{ inputs.enable-concurrency }}
 
     runs-on: ${{ matrix.os }}
 
@@ -94,34 +109,28 @@ jobs:
       fail-fast: false
       matrix:
         os: ${{ fromJson(inputs.os) }}
-        php: ${{ fromJson(inputs.php) }}
+        php-version: ${{ fromJson(inputs.php-version) }}
 
     steps:
       - name: Checkout.
         uses: actions/checkout@v4
 
-      - name: Install PHP.
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP Environment.
+        uses: php-forge/actions/actions/php-setup@main
         with:
-          coverage: ${{ inputs.coverage }}
-          extensions: ${{ inputs.extensions}}
-          ini-values: ${{ inputs.ini-values}}
-          php-version: ${{ matrix.php }}
+          auth-token: ${{ secrets.AUTH_TOKEN }}
+          composer-command: ${{ inputs.composer-command }}
+          composer-version: ${{ inputs.composer-version }}
+          coverage-driver: none
+          extensions: ${{ inputs.extensions }}
+          ini-values: ${{ inputs.php-ini-values }}
+          php-version: ${{ matrix.php-version }}
           tools: ${{ inputs.tools }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update composer.
-        run: composer self-update ${{ inputs.composer-version }}
-
-      - name: Configure composer.
-        run: |
-          if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
-            composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
-          fi
-
-      - name: Install dependencies with composer.
-        run: ${{ inputs.composer-command }}
+      - name: Pre-setup hook.
+        if: inputs.hook != ''
+        shell: bash
+        run: ${{ inputs.hook }}
 
       - name: Cache PHPStan results.
         if: ${{ inputs.phpstan }}
