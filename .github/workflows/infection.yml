@@ -28,6 +28,11 @@ on:
         default: ${{ github.workflow }}-${{ github.ref }}
         required: false
         type: string
+      coverage-driver:
+        description: Code coverage driver to use (pcov, xdebug).
+        default: pcov
+        required: false
+        type: string
       enable-concurrency:
         description: Enable concurrency.
         default: true
@@ -121,7 +126,7 @@ jobs:
           auth-token: ${{ secrets.AUTH_TOKEN }}
           composer-command: ${{ inputs.composer-command }}
           composer-version: ${{ inputs.composer-version }}
-          coverage-driver: none
+          coverage-driver: ${{ inputs.coverage }}
           extensions: ${{ inputs.extensions }}
           ini-values: ${{ inputs.php-ini-values }}
           php-version: ${{ matrix.php-version }}
