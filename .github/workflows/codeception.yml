@@ -18,9 +18,14 @@ on:
         default:
         required: false
         type: string
-      coverage:
-        description: Generate code coverage report.
+      coverage-driver:
+        description: Code coverage driver to use (pcov, xdebug).
         default: pcov
+        required: false
+        type: string
+      coverage-file:
+        description: Coverage output file name.
+        default: tests/_output/coverage.xml
         required: false
         type: string
       debug:
@@ -33,22 +38,17 @@ on:
         default:
         required: false
         type: string
-      file-codecoverage:
-        description: File to upload to Codecov.
-        default: tests/_output/coverage.xml
+      os:
+        description: Operating systems to test, separated by comma.
+        default: '["ubuntu-latest","windows-latest"]'
         required: false
         type: string
-      ini-values:
+      php-ini-values:
         description: Initial values for PHP configuration.
         default: date.timezone='UTC'
         required: false
         type: string
-      os:
-        description: Os to test, separated by comma.
-        default: '["ubuntu-latest","windows-latest"]'
-        required: false
-        type: string
-      php:
+      php-version:
         description: PHP versions to test, separated by comma.
         default: '["8.1","8.2","8.3","8.4"]'
         required: false
@@ -70,7 +70,7 @@ concurrency:
 
 jobs:
   codeception:
-    name: PHP-${{ matrix.php }}-${{ matrix.os }}
+    name: PHP ${{ matrix.php-version }}-${{ matrix.os }}
 
     env:
       key: cache-v1
@@ -82,52 +82,33 @@ jobs:
       fail-fast: false
       matrix:
         os: ${{ fromJson(inputs.os) }}
-        php: ${{ fromJson(inputs.php) }}
+        php-version: ${{ fromJson(inputs.php-version) }}
 
     steps:
       - name: Checkout.
         uses: actions/checkout@v4
 
-      - name: Install PHP with extensions.
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP Environment.
+        uses: php-forge/actions/actions/php-setup@main
         with:
-          coverage: ${{ inputs.coverage }}
+          auth-token: ${{ secrets.AUTH_TOKEN }}
+          composer-command: ${{ inputs.composer-command }}
+          composer-version: ${{ inputs.composer-version }}
+          coverage-driver: ${{ inputs.coverage-driver }}
           extensions: ${{ inputs.extensions }}
-          ini-values: ${{ inputs.ini-values }}
-          php-version: ${{ matrix.php }}
+          ini-values: ${{ inputs.php-ini-values }}
+          php-version: ${{ matrix.php-version }}
           tools: ${{ inputs.tools }}
-
-      - name: Update composer.
-        run: composer self-update ${{ inputs.composer-version }}
-
-      - name: Configure composer linux.
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          if [ "${{ secrets.AUTH_TOKEN }}" != '' ]; then
-            composer config -g github-oauth.github.com ${{ secrets.AUTH_TOKEN }};
-          fi
-
-      - name: Configure composer windows.
-        if: matrix.os == 'windows-latest'
-        run: |
-          if ($env:AUTH_TOKEN -ne '') {
-            composer config -g github-oauth.github.com $env:AUTH_TOKEN
-          }
-        env:
-          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
-
-      - name: Install dependencies with composer.
-        run: ${{ inputs.composer-command }}
 
       - name: Run tests with codeception with code coverage.
         continue-on-error:  ${{ inputs.debug }}
         run: ${{ inputs.codeception-command }}
 
       - name: Upload coverage to Codecov.
-        if: matrix.os == 'ubuntu-latest' && matrix.php == '8.1'
+        if: matrix.os == 'ubuntu-latest' && matrix.php-version == '8.1'
         uses: codecov/codecov-action@v3
         with:
-          file: ${{ inputs.file-codecoverage }}
+          file: ${{ inputs.coverage-file }}
 
       - name: Archive codeception results
         if: ${{ inputs.debug }}
