@@ -100,6 +100,9 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: ${{ inputs.tools }}
 
+      - name: Generate base classes for all suites.
+        run: vendor/bin/codecept build
+
       - name: Run tests with codeception with code coverage.
         continue-on-error:  ${{ inputs.debug }}
         run: ${{ inputs.codeception-command }}
