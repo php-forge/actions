@@ -63,6 +63,9 @@ on:
       AUTH_TOKEN:
         description: GitHub token for composer.
         required: false
+      CODECOV_TOKEN:
+        description: Codecov token.
+        required: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -109,9 +112,10 @@ jobs:
 
       - name: Upload coverage to Codecov.
         if: matrix.os == 'ubuntu-latest' && matrix.php-version == '8.1'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
-          file: ${{ inputs.coverage-file }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./${{ inputs.coverage-file }}
 
       - name: Archive codeception results
         if: ${{ inputs.debug }}
