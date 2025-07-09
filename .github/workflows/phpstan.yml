@@ -39,7 +39,7 @@ on:
         required: false
         type: string
       hook:
-        description: Command to run before PHP setup.
+        description: Command to run before PHPStan analysis.
         default: ""
         required: false
         type: string
