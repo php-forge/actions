@@ -38,6 +38,11 @@ on:
         default:
         required: false
         type: string
+      hook:
+        description: Command to run before PHP setup.
+        default: ""
+        required: false
+        type: string
       os:
         description: Operating systems to test, separated by comma.
         default: '["ubuntu-latest"]'
@@ -95,6 +100,11 @@ jobs:
           ini-values: ${{ inputs.php-ini-values }}
           php-version: ${{ matrix.php-version }}
           tools: ${{ inputs.tools }}
+
+      - name: Pre-setup hook.
+        if: inputs.hook != ''
+        shell: bash
+        run: ${{ inputs.hook }}
 
       - name: Static analysis.
         run: vendor/bin/phpstan --configuration=${{ inputs.configuration }} ${{ inputs.command-options }}
