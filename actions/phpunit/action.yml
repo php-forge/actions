@@ -2,6 +2,11 @@ name: PHPUnit Test Runner.
 description: Run PHPUnit tests with coverage and configurable options.
 
 inputs:
+  additional-args:
+    description: Additional PHPUnit arguments.
+    default: "--log-junit junit.xml"
+    required: false
+    type: string
   configuration:
     description: PHPUnit configuration file.
     default: ""
@@ -49,11 +54,6 @@ inputs:
     type: string
   test-suite:
     description: Specific test suite to run.
-    default: ""
-    required: false
-    type: string
-  additional-args:
-    description: Additional PHPUnit arguments.
     default: ""
     required: false
     type: string
@@ -160,6 +160,12 @@ runs:
       shell: pwsh
       if: runner.os == 'Windows'
       run: Invoke-Expression "${{ steps.build-cmd-windows.outputs.command }}"
+
+    - name: Upload test results to Codecov
+      if: ${{ !cancelled() }}
+      uses: codecov/test-results-action@v1
+      with:
+        token: ${{ inputs.coverage-token }}
 
     - name: Upload coverage to Codecov.
       if: inputs.coverage == 'true'
