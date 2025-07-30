@@ -144,7 +144,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: ${{ inputs.tools }}
 
-      - name: Before hook.
+      - name: Run before hook.
         if: inputs.before-hook != ''
         run: ${{ inputs.before-hook }}
 
