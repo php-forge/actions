@@ -3,6 +3,11 @@ name: infection
 on:
   workflow_call:
     inputs:
+      before-hook:
+        description: Before hook to run.
+        default:
+        required: false
+        type: string
       command:
         description: Command to run.
         default: infection
@@ -56,11 +61,6 @@ on:
       framework-options:
         description: Options for the framework.
         default:
-        required: false
-        type: string
-      hook:
-        description: Command to run before Infection analysis.
-        default: ""
         required: false
         type: string
       os:
@@ -132,10 +132,9 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: ${{ inputs.tools }}
 
-      - name: Pre-setup hook.
-        if: inputs.hook != ''
-        shell: bash
-        run: ${{ inputs.hook }}
+      - name: Run before hook.
+        if: inputs.before-hook != ''
+        run: ${{ inputs.before-hook }}
 
       - name: Cache PHPStan results.
         if: ${{ inputs.phpstan }}
