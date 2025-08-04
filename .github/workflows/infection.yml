@@ -13,9 +13,14 @@ on:
         default: infection
         required: false
         type: string
+      command-coverage-options:
+        description: Options for the infection tool when generating coverage.
+        default: --only-covered
+        required: false
+        type: string
       command-options:
         description: Options for the infection tool.
-        default: --threads=2 --ignore-msi-with-no-mutations --only-covered
+        default: --threads=2 --ignore-msi-with-no-mutations
         required: false
         type: string
       composer-command:
@@ -151,7 +156,11 @@ jobs:
 
       - name: Run infection.
         run: |
-          vendor/bin/${{ inputs.command }} ${{ inputs.command-options }} ${{ inputs.phpstan && '--static-analysis-tool=phpstan' || '' }} ${{ inputs.framework-options }}
+          vendor/bin/${{ inputs.command }} \
+            ${{ inputs.command-options }} \
+            ${{ inputs.command-coverage-options }} \
+            ${{ inputs.phpstan && '--static-analysis-tool=phpstan' || '' }} \
+            ${{ inputs.framework-options }}
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 
