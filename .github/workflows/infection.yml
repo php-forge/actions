@@ -156,7 +156,11 @@ jobs:
 
       - name: Run infection.
         run: |
-          vendor/bin/${{ inputs.command }} ${{ inputs.command-options }} ${{ inputs.command-coverage-options }} ${{ inputs.phpstan && '--static-analysis-tool=phpstan' || '' }} ${{ inputs.framework-options }}
+          vendor/bin/${{ inputs.command }} \
+            ${{ inputs.command-options }} \
+            ${{ inputs.command-coverage-options }} \
+            ${{ inputs.phpstan && '--static-analysis-tool=phpstan' || '' }} \
+            ${{ inputs.framework-options }}
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 
