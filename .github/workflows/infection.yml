@@ -15,7 +15,7 @@ on:
         type: string
       command-coverage-options:
         description: Options for the infection tool when generating coverage.
-        default: --only-covered
+        default:
         required: false
         type: string
       command-options:
