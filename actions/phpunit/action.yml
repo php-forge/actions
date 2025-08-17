@@ -101,7 +101,7 @@ runs:
     - name: Run PHPUnit tests on linux.
       shell: bash
       if: runner.os != 'Windows'
-      run: ${{ ssteps.build-cmd.outputs.command }}
+      run: ${{ steps.build-cmd.outputs.command }}
 
     - name: Run PHPUnit tests on windows.
       shell: pwsh
