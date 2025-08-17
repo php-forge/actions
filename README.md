@@ -2,19 +2,53 @@
     <a href="https://github.com/php-forge/reusable-actions" target="_blank">
         <img src="https://avatars.githubusercontent.com/u/103309199?s=400&u=ca3561c692f53ed7eb290d3bb226a2828741606f&v=4" height="100px">
     </a>
-    <h1 align="center">PHPForge - actions reusable</h1>
+    <h1 align="center">PHPForge - Reusable GitHub Actions</h1>
     <br>
 </p>
 
-## Requeriments
+A comprehensive collection of reusable GitHub Actions and workflows specifically designed for PHP projects. Streamline 
+your CI/CD pipeline with battle-tested, configurable workflows for testing, static analysis, and code quality checks.
 
-- PHP.
+## Features
 
-## Usage
+- ✅ **Code Quality** - Easy Coding Standard (ECS) for consistent code formatting.
+- ✅ **Complete Testing Suite** - PHPUnit, Codeception, and mutation testing with Infection.
+- ✅ **Database Testing** - Multi-database support (MySQL, PostgreSQL, SQLite, etc.).
+- ✅ **Dependency Management** - Composer require checker for dependency validation.
+- ✅ **Static Analysis** - PHPStan integration.
+- ✅ **Zero Configuration** - Sensible defaults with extensive customization options.
 
-### Example of using the [Dependency check](https://github.com/maglnet/ComposerRequireChecker)
+## Available Workflows
 
-```yml
+### Testing Workflows
+
+| Workflow | Description | Use Case |
+|----------|-------------|----------|
+| [`codeception.yml`](#codeception) | Codeception testing framework | Acceptance and functional tests |
+| [`infection.yml`](#infection) | Mutation testing | Code quality validation |
+| [`phpunit-database.yml`](#phpunit-database) | PHPUnit with database services | Database-dependent tests |
+| [`phpunit.yml`](#phpunit) | PHPUnit testing with coverage | Unit and integration tests |
+
+### Quality Assurance Workflows
+
+| Workflow | Description | Use Case |
+|----------|-------------|----------|
+| [`composer-require-checker.yml`](#composer-require-checker) | Dependency validation | Ensure proper dependencies |
+| [`ecs.yml`](#ecs) | Easy Coding Standard | Code formatting and style |
+| [`phpstan.yml`](#phpstan) | Static analysis | Type checking and bug detection |
+
+### ⚙️ Utility Actions
+
+| Action | Description | Use Case |
+|--------|-------------|----------|
+| [`php-setup`](#php-setup) | PHP environment setup | Prepare PHP with extensions |
+| [`phpunit-runner`](#phpunit-runner) | Advanced PHPUnit execution | Custom test execution |
+
+## Quick start
+
+### Basic PHPUnit Testing
+
+```yaml
 on:
   pull_request:
     paths-ignore:
@@ -23,122 +57,30 @@ on:
       - 'CHANGELOG.md'
       - '.gitignore'
       - '.gitattributes'
-      - 'infection.json.dist'
-      - 'phpunit.xml.dist'
-      - 'psalm.xml'
 
   push:
-    branches: ['main']
     paths-ignore:
       - 'docs/**'
       - 'README.md'
       - 'CHANGELOG.md'
       - '.gitignore'
       - '.gitattributes'
-      - 'infection.json.dist'
-      - 'phpunit.xml.dist'
-      - 'psalm.xml'
 
-name: dependency-check
+name: tests
 
 jobs:
-  composer-require-checker:
-    uses: php-forge/actions/.github/workflows/composer-require-checker.yml@main
+  tests:
+    uses: php-forge/actions/.github/workflows/phpunit.yml@v1
     secrets:
-      AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }} # for repository private
-    with:
-      os: >-
-        ['ubuntu-latest']
-      php: >-
-        ['8.1', '8.2']
-```
-
-### Example of using the [Easy Coding Standard](https://github.com/easy-coding-standard/easy-coding-standard)
-
-```yml
-on:
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'infection.json.dist'
-      - 'phpunit.xml.dist'
-
-  push:
-    branches: ['main']
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'infection.json.dist'
-      - 'phpunit.xml.dist'
-
-name: ecs
-
-jobs:
-  easy-coding-standard:
-    uses: php-forge/actions/.github/workflows/ecs.yml@main
-    secrets:
-      AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }} # for repository private
-    with:
-      os: >-
-        ['ubuntu-latest']
-      php: >-
-        ['8.1', '8.2']
-```
-
-### Example of using the [PHPUnit](https://github.com/sebastianbergmann/phpunit) action.
-
-```yml
-on:
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'infection.json.dist'
-      - 'psalm.xml'
-
-  push:
-    branches: ['main']
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'infection.json.dist'
-      - 'psalm.xml'
-  
-name: build
-
-jobs:
-  phpunit:
-    uses: php-forge/actions/.github/workflows/phpunit.yml@main
-    secrets:
-      AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }} # for repository private
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     with:
-      # coverage: pcov / coverage: xdebug / coverage: xdebug2 / coverage: none 
-      # extensions: ext-php 
-      # ini-values: date.timezone='UTC'      
-      os: >-
-        ['ubuntu-latest', 'windows-latest']
-      php: >-
-        ['8.0', '8.1']
-      #tools: composer:v2 
+      os: '["ubuntu-latest", "windows-latest"]'
+      php-version: '["8.1", "8.2", "8.3", "8.4"]'
 ```
 
-### Example of using the [PSALM](https://github.com/vimeo/psalm) action.
+### Complete Quality Pipeline
 
-```yml
+```yaml
 on:
   pull_request:
     paths-ignore:
@@ -147,85 +89,37 @@ on:
       - 'CHANGELOG.md'
       - '.gitignore'
       - '.gitattributes'
-      - 'infection.json.dist'
-      - 'psalm.xml'
 
   push:
-    branches: ['main']
     paths-ignore:
       - 'docs/**'
       - 'README.md'
       - 'CHANGELOG.md'
       - '.gitignore'
       - '.gitattributes'
-      - 'infection.json.dist'
-      - 'psalm.xml'
-
-name: static analysis
+      
+name: quality
 
 jobs:
-  psalm:
-    uses: php-forge/actions/.github/workflows/psalm.yml@main
+  static-analysis:
+    uses: php-forge/actions/.github/workflows/phpstan.yml@v1
+    
+  coding-standards:
+    uses: php-forge/actions/.github/workflows/ecs.yml@v1
+    
+  dependency-check:
+    uses: php-forge/actions/.github/workflows/composer-require-checker.yml@v1
+    
+  mutation-testing:
+    uses: php-forge/actions/.github/workflows/infection.yml@v1
     secrets:
-      AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }} # for repository private   
-    with:
-      # extensions: ext-php 
-      # ini-values: date.timezone='UTC'       
-      os: >-
-        ['ubuntu-latest']
-      php: >-
-        ['7.4', '8.0', '8.1']
-      #tools: composer:v2, cs2pr 
-```
-
-### Example of using the [ROAVE-INFECTION](https://github.com/roave/infection-static-analysis-plugin) action.
-
-```yml
-on:
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'infection.json.dist'
-      - 'psalm.xml'
-
-  push:
-    branches: ['main']
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'infection.json.dist'
-      - 'psalm.xml'
-
-name: mutation test
-
-jobs:
-  mutation:
-    uses: php-forge/actions/.github/workflows/roave-infection.yml@main
-    secrets:
-      AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }} # for repository private
-      STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}    
-    with:
-      # coverage: pcov / coverage: xdebug / coverage: xdebug2 / coverage: none 
-      # extensions: ext-php
-      # ini-values: date.timezone='UTC'   
-      os: >-
-        ['ubuntu-latest']
-      php: >-
-        ['8.1']
-      #tools: composer:v2        
+      STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 ```
 
 ## Our social networks
 
-[![Twitter](https://img.shields.io/badge/twitter-follow-1DA1F2?logo=twitter&logoColor=1DA1F2&labelColor=555555?style=flat)](https://twitter.com/Terabytesoftw)
+[![X](https://img.shields.io/badge/follow-@terabytesoftw-1DA1F2?logo=x&logoColor=1DA1F2&labelColor=555555&style=flat)](https://x.com/Terabytesoftw)
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+[![License](https://img.shields.io/github/license/yii2-extensions/nested-sets-behavior)](LICENSE.md)
