@@ -98,16 +98,15 @@ runs:
         echo "command=$PHPUNIT_CMD" >> $GITHUB_OUTPUT
         echo "PHPUnit command: $PHPUNIT_CMD"
 
-    - name: Run PHPUnit tests.
+    - name: Run PHPUnit tests on linux.
       shell: bash
-      run: |
-        if [ "${{ runner.os }}" = "Windows" ]; then
-          # Windows: Use cmd to handle paths properly
-          cmd //c "${{ steps.build-cmd.outputs.command }}"
-        else
-          # Linux/macOS: Direct execution
-          ${{ steps.build-cmd.outputs.command }}
-        fi
+      if: runner.os != 'Windows'
+      run: ${{ steps.build-cmd-unix.outputs.command }}
+
+    - name: Run PHPUnit tests on windows.
+      shell: pwsh
+      if: runner.os == 'Windows'
+      run: Invoke-Expression "${{ steps.build-cmd-windows.outputs.command }}"
 
     - name: Upload test results to Codecov.
       if: ${{ !cancelled() && inputs.coverage-token != '' }}
