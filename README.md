@@ -22,27 +22,27 @@ your CI/CD pipeline with battle-tested, configurable workflows for testing, stat
 
 ### Testing Workflows
 
-| Workflow | Description | Use Case |
-|----------|-------------|----------|
-| [`codeception.yml`](#codeception) | Codeception testing framework | Acceptance and functional tests |
-| [`infection.yml`](#infection) | Mutation testing | Code quality validation |
-| [`phpunit-database.yml`](#phpunit-database) | PHPUnit with database services | Database-dependent tests |
-| [`phpunit.yml`](#phpunit) | PHPUnit testing with coverage | Unit and integration tests |
+| Workflow | Description |
+|----------|-------------|
+| [`codeception.yml`](#codeception) | Codeception testing framework |
+| [`infection.yml`](#infection) | Mutation testing |
+| [`phpunit-database.yml`](#phpunit-database) | PHPUnit with database services |
+| [`phpunit.yml`](#phpunit) | PHPUnit testing with coverage |
 
 ### Quality Assurance Workflows
 
-| Workflow | Description | Use Case |
-|----------|-------------|----------|
-| [`composer-require-checker.yml`](#composer-require-checker) | Dependency validation | Ensure proper dependencies |
-| [`ecs.yml`](#ecs) | Easy Coding Standard | Code formatting and style |
-| [`phpstan.yml`](#phpstan) | Static analysis | Type checking and bug detection |
+| Workflow | Description |
+|----------|-------------|
+| [`composer-require-checker.yml`](#composer-require-checker) | Dependency validation |
+| [`ecs.yml`](#ecs) | Easy Coding Standard |
+| [`phpstan.yml`](#phpstan) | Static analysis |
 
-### ⚙️ Utility Actions
+### Utility Actions
 
-| Action | Description | Use Case |
-|--------|-------------|----------|
-| [`php-setup`](#php-setup) | PHP environment setup | Prepare PHP with extensions |
-| [`phpunit-runner`](#phpunit-runner) | Advanced PHPUnit execution | Custom test execution |
+| Action | Description |
+|--------|-------------|
+| [`php-setup`](#php-setup) | PHP environment setup |
+| [`phpunit-runner`](#phpunit-runner) | Advanced PHPUnit execution |
 
 ## Quick start
 
