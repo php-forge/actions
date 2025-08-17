@@ -1,14 +1,12 @@
 <p align="center">
-    <a href="https://github.com/php-forge/reusable-actions" target="_blank">
+    <a href="https://github.com/php-forge/actions" target="_blank">
         <img src="https://avatars.githubusercontent.com/u/103309199?s=400&u=ca3561c692f53ed7eb290d3bb226a2828741606f&v=4" height="100px">
     </a>
     <h1 align="center">PHPForge - Reusable GitHub Actions</h1>
     <br>
 </p>
 
-<a href="https://github.com/php-forge/actions/releases" target="_blank">
-    <img src="https://img.shields.io/github/v/release/php-forge/actions" alt="Latest Stable Version">
-</a>
+[![GitHub Release](https://img.shields.io/github/v/release/php-forge/actions)](https://github.com/php-forge/actions/releases)
 
 A comprehensive collection of reusable GitHub Actions and workflows specifically designed for PHP projects. Streamline 
 your CI/CD pipeline with battle-tested, configurable workflows for testing, static analysis, and code quality checks.
@@ -287,4 +285,4 @@ jobs:
 
 ## License
 
-[![License](https://img.shields.io/github/license/php-forge/reusable-actions)](LICENSE.md)
+[![License](https://img.shields.io/github/license/php-forge/actions)](LICENSE.md)
