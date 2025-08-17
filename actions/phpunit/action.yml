@@ -101,12 +101,12 @@ runs:
     - name: Run PHPUnit tests on linux.
       shell: bash
       if: runner.os != 'Windows'
-      run: ${{ steps.build-cmd-unix.outputs.command }}
+      run: ${{ ssteps.build-cmd.outputs.command }}
 
     - name: Run PHPUnit tests on windows.
       shell: pwsh
       if: runner.os == 'Windows'
-      run: Invoke-Expression "${{ steps.build-cmd-windows.outputs.command }}"
+      run: Invoke-Expression "${{ steps.build-cmd.outputs.command }}"
 
     - name: Upload test results to Codecov.
       if: ${{ !cancelled() && inputs.coverage-token != '' }}
