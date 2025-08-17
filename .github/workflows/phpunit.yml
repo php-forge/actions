@@ -23,11 +23,6 @@ on:
         default: ${{ github.workflow }}-${{ github.ref }}
         required: false
         type: string
-      coverage:
-        description: Enable code coverage report (true/false).
-        default: true
-        required: false
-        type: boolean
       coverage-driver:
         description: Code coverage driver to use (pcov, xdebug).
         default: pcov
@@ -152,10 +147,10 @@ jobs:
         uses: php-forge/actions/actions/phpunit@main
         with:
           configuration: ${{ inputs.phpunit-configuration }}
+          coverage-driver: ${{ inputs.coverage-driver }}
           coverage-file: ${{ inputs.coverage-file }}
           coverage-format: ${{ inputs.coverage-format }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
-          coverage: ${{ inputs.coverage }}
           debug: ${{ inputs.phpunit-debug }}
           exclude-group: ${{ inputs.phpunit-exclude-group }}
           group: ${{ inputs.phpunit-group }}
