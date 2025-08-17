@@ -12,11 +12,11 @@ inputs:
     default: ""
     required: false
     type: string
-  coverage:
-    description: Generate code coverage report.
-    default: true
+  coverage-driver:
+    description: Code coverage driver to use (pcov, xdebug, none).
+    default: ""
     required: false
-    type: boolean
+    type: string
   coverage-file:
     description: Coverage output file name.
     default: coverage.xml
@@ -61,39 +61,31 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Build PHPUnit command (Linux).
+    - name: Build PHPUnit command.
       shell: bash
-      if: runner.os != 'Windows'
-      id: build-cmd-unix
+      id: build-cmd
       run: |
         PHPUNIT_CMD="${{ inputs.path }} --colors=always"
 
-        # Add coverage if enabled
-        if [ "${{ inputs.coverage }}" = "true" ]; then
+        # Function to add parameter if value is not empty
+        add_param() {
+          if [ -n "$2" ]; then
+            PHPUNIT_CMD="$PHPUNIT_CMD $1 $2"
+          fi
+        }
+
+        # Add coverage if driver is specified and not 'none'
+        if [ -n "${{ inputs.coverage-driver }}" ] && [ "${{ inputs.coverage-driver }}" != "none" ]; then
           PHPUNIT_CMD="$PHPUNIT_CMD --coverage-${{ inputs.coverage-format }}=${{ inputs.coverage-file }}"
         fi
 
-        # Add configuration file
-        if [ -n "${{ inputs.configuration }}" ]; then
-          PHPUNIT_CMD="$PHPUNIT_CMD --configuration ${{ inputs.configuration }}"
-        fi
+        # Add other parameters
+        add_param "--configuration" "${{ inputs.configuration }}"
+        add_param "--testsuite" "${{ inputs.test-suite }}"
+        add_param "--group" "${{ inputs.group }}"
+        add_param "--exclude-group" "${{ inputs.exclude-group }}"
 
-        # Add test suite
-        if [ -n "${{ inputs.test-suite }}" ]; then
-          PHPUNIT_CMD="$PHPUNIT_CMD --testsuite ${{ inputs.test-suite }}"
-        fi
-
-        # Add group filter
-        if [ -n "${{ inputs.group }}" ]; then
-          PHPUNIT_CMD="$PHPUNIT_CMD --group ${{ inputs.group }}"
-        fi
-
-        # Add exclude group filter
-        if [ -n "${{ inputs.exclude-group }}" ]; then
-          PHPUNIT_CMD="$PHPUNIT_CMD --exclude-group ${{ inputs.exclude-group }}"
-        fi
-
-        # Add debug flags
+        # Add debug flags if specified
         if [ -n "${{ inputs.debug }}" ]; then
           PHPUNIT_CMD="$PHPUNIT_CMD ${{ inputs.debug }}"
         fi
@@ -106,69 +98,24 @@ runs:
         echo "command=$PHPUNIT_CMD" >> $GITHUB_OUTPUT
         echo "PHPUnit command: $PHPUNIT_CMD"
 
-    - name: Build PHPUnit command (Windows).
-      shell: pwsh
-      if: runner.os == 'Windows'
-      id: build-cmd-windows
-      run: |
-        $phpunitCmd = "${{ inputs.path }} --colors=always"
-
-        # Add coverage if enabled
-        if ("${{ inputs.coverage }}" -eq "true") {
-          $phpunitCmd += " --coverage-${{ inputs.coverage-format }}=${{ inputs.coverage-file }}"
-        }
-
-        # Add configuration file
-        if ("${{ inputs.configuration }}" -ne "") {
-          $phpunitCmd += " --configuration ${{ inputs.configuration }}"
-        }
-
-        # Add test suite
-        if ("${{ inputs.test-suite }}" -ne "") {
-          $phpunitCmd += " --testsuite ${{ inputs.test-suite }}"
-        }
-
-        # Add group filter
-        if ("${{ inputs.group }}" -ne "") {
-          $phpunitCmd += " --group ${{ inputs.group }}"
-        }
-
-        # Add exclude group filter
-        if ("${{ inputs.exclude-group }}" -ne "") {
-          $phpunitCmd += " --exclude-group ${{ inputs.exclude-group }}"
-        }
-
-        # Add debug flags
-        if ("${{ inputs.debug }}" -ne "") {
-          $phpunitCmd += " ${{ inputs.debug }}"
-        }
-
-        # Add additional arguments
-        if ("${{ inputs.additional-args }}" -ne "") {
-          $phpunitCmd += " ${{ inputs.additional-args }}"
-        }
-
-        echo "command=$phpunitCmd" >> $env:GITHUB_OUTPUT
-        Write-Host "PHPUnit command: $phpunitCmd"
-
     - name: Run PHPUnit tests on linux.
       shell: bash
       if: runner.os != 'Windows'
-      run: ${{ steps.build-cmd-unix.outputs.command }}
+      run: ${{ steps.build-cmd.outputs.command }}
 
     - name: Run PHPUnit tests on windows.
       shell: pwsh
       if: runner.os == 'Windows'
-      run: Invoke-Expression "${{ steps.build-cmd-windows.outputs.command }}"
+      run: Invoke-Expression "${{ steps.build-cmd.outputs.command }}"
 
-    - name: Upload test results to Codecov
-      if: ${{ !cancelled() }}
+    - name: Upload test results to Codecov.
+      if: ${{ !cancelled() && inputs.coverage-driver != 'none' && inputs.coverage-token != '' }}
       uses: codecov/test-results-action@v1
       with:
         token: ${{ inputs.coverage-token }}
 
     - name: Upload coverage to Codecov.
-      if: inputs.coverage == 'true'
+      if: inputs.coverage-driver != '' && inputs.coverage-driver != 'none' && inputs.coverage-token != ''
       uses: codecov/codecov-action@v4
       with:
         token: ${{ inputs.coverage-token }}

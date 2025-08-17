@@ -48,11 +48,6 @@ on:
         default: true
         required: false
         type: boolean
-      coverage:
-        description: Generate code coverage report.
-        default: pcov
-        required: false
-        type: string
       debug:
         description: Debug mode.
         default: false
@@ -131,7 +126,7 @@ jobs:
           auth-token: ${{ secrets.AUTH_TOKEN }}
           composer-command: ${{ inputs.composer-command }}
           composer-version: ${{ inputs.composer-version }}
-          coverage-driver: ${{ inputs.coverage }}
+          coverage-driver: ${{ inputs.coverage-driver }}
           extensions: ${{ inputs.extensions }}
           ini-values: ${{ inputs.php-ini-values }}
           php-version: ${{ matrix.php-version }}
