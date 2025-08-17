@@ -109,7 +109,7 @@ runs:
       run: Invoke-Expression "${{ steps.build-cmd.outputs.command }}"
 
     - name: Upload test results to Codecov.
-      if: ${{ !cancelled() && inputs.coverage-token != '' }}
+      if: ${{ !cancelled() && inputs.coverage-driver != '' && inputs.coverage-driver != 'none' && inputs.coverage-token != '' }}
       uses: codecov/test-results-action@v1
       with:
         token: ${{ inputs.coverage-token }}
