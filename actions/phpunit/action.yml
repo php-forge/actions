@@ -116,7 +116,7 @@ runs:
 
     - name: Upload coverage to Codecov.
       if: inputs.coverage-driver != '' && inputs.coverage-driver != 'none' && inputs.coverage-token != ''
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         token: ${{ inputs.coverage-token }}
         file: ./${{ inputs.coverage-file }}
