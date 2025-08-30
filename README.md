@@ -179,7 +179,7 @@ jobs:
       ini-values: date.timezone='UTC', memory_limit=-1
 
       # Operating systems
-      os: '["ubuntu-latest", "windows-latest"]'
+      os: '["ubuntu-latest", "windows-2022"]'
 
       # PHP versions to test
       php-version: '["8.1", "8.2", "8.3", "8.4"]'

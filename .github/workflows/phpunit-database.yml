@@ -81,7 +81,7 @@ on:
         type: string
       os:
         description: Operating systems to test, separated by comma.
-        default: '["ubuntu-latest","windows-latest"]'
+        default: '["ubuntu-latest","windows-2022"]'
         required: false
         type: string
       phpunit-configuration:
