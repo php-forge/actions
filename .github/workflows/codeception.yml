@@ -121,7 +121,7 @@ jobs:
         run: ${{ inputs.codeception-command }}
 
       - name: Upload coverage to Codecov.
-        if: matrix.os == 'ubuntu-latest' && matrix.php-version == '8.1'
+        if: inputs.coverage-driver != 'none' && matrix.os == 'ubuntu-latest' && matrix.php-version == '8.1'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

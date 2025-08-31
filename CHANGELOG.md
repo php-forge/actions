@@ -1,5 +1,9 @@
 # Change Log
 
+## v1.0.4 August 30, 2025
+
+- Bug #54: Update coverage upload condition to check for coverage driver (@terabytesoftw)
+
 ## v1.0.3 August 30, 2025
 
 - Bug #53: Update default operating systems to use `windows-2022` across workflows and documentation (@terabytesoftw)
