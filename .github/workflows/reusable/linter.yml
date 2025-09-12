@@ -6,7 +6,7 @@ on:
     inputs:
       concurrency-group:
         description: Concurrency group name.
-        default: ${{ github.workflow }}-${{ github.ref }}
+        default: linter/${{ github.workflow }}-${{ github.ref }}
         required: false
         type: string
       enable-concurrency:
@@ -15,12 +15,12 @@ on:
         required: false
         type: boolean
       linter-version:
-        description: Super Linter version.
+        description: Super linter version.
         default: v8.1.0
         required: false
         type: string
       os:
-        description: Os to test, separated by comma.
+        description: Os to test, as a JSON array string ('["ubuntu-latest"]').
         default: '["ubuntu-latest"]'
         required: false
         type: string
@@ -35,8 +35,8 @@ jobs:
     name: Super Linter
 
     concurrency:
-      group: ${{ inputs.concurrency-group }}
       cancel-in-progress: ${{ inputs.enable-concurrency }}
+      group: ${{ inputs.concurrency-group }}
 
     runs-on: ${{ inputs.os }}
 
@@ -65,15 +65,15 @@ jobs:
       - name: Pull linter image.
         run: docker pull ghcr.io/super-linter/super-linter:slim-${{ inputs.linter-version }}
 
-      - name: Run super linter.
-        uses: super-linter/super-linter/slim@${{ inputs.linter-version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_CHECKOV: ${{ env.VALIDATE_CHECKOV || false}}
-          VALIDATE_ENV: ${{ env.VALIDATE_ENV || false }}
-          VALIDATE_GIT_MERGE_CONFLICT_MARKERS: >-
-            ${{ env.VALIDATE_GIT_MERGE_CONFLICT_MARKERS || false }}
-          VALIDATE_GITHUB_ACTIONS_ZIZMOR: >-
-            ${{ env.VALIDATE_GITHUB_ACTIONS_ZIZMOR || false }}
-          VALIDATE_JSCPD: ${{ env.VALIDATE_JSCPD || false }}
-          VALIDATE_TRIVY: ${{ env.VALIDATE_TRIVY || false }}
+      - name: Run super linter (container).
+        run: |
+          docker run --rm \
+            -e GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+            -e VALIDATE_CHECKOV="${{ env.VALIDATE_CHECKOV || false }}" \
+            -e VALIDATE_ENV="${{ env.VALIDATE_ENV || false }}" \
+            -e VALIDATE_GIT_MERGE_CONFLICT_MARKERS="${{ env.VALIDATE_GIT_MERGE_CONFLICT_MARKERS || false }}" \
+            -e VALIDATE_GITHUB_ACTIONS_ZIZMOR="${{ env.VALIDATE_GITHUB_ACTIONS_ZIZMOR || false }}" \
+            -e VALIDATE_JSCPD="${{ env.VALIDATE_JSCPD || false }}" \
+            -e VALIDATE_TRIVY="${{ env.VALIDATE_TRIVY || false }}" \
+            -v "$PWD:$PWD" -w "$PWD" \
+            ghcr.io/super-linter/super-linter:slim-${{ inputs.linter-version }}
