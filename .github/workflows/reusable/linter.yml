@@ -4,6 +4,11 @@ name: linter
 on:
   workflow_call:
     inputs:
+      checkout_fetch_depth:
+        description: Fetch depth for checkout action.
+        default: 0
+        required: false
+        type: number
       concurrency-group:
         description: Concurrency group name.
         default: linter/${{ github.workflow }}-${{ github.ref }}
@@ -49,7 +54,7 @@ jobs:
       - name: Checkout.
         uses: actions/checkout@v5
         with:
-          fetch-depth: ${{ env.checkout-fetch-depth || 0 }}
+          fetch-depth: ${{ inputs.checkout_fetch_depth }}
 
       - name: Cache docker layers.
         uses: actions/cache@v4
@@ -65,15 +70,13 @@ jobs:
       - name: Pull linter image.
         run: docker pull ghcr.io/super-linter/super-linter:slim-${{ inputs.linter-version }}
 
-      - name: Run super linter (container).
-        run: |
-          docker run --rm \
-            -e GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-            -e VALIDATE_CHECKOV="${{ env.VALIDATE_CHECKOV || false }}" \
-            -e VALIDATE_ENV="${{ env.VALIDATE_ENV || false }}" \
-            -e VALIDATE_GIT_MERGE_CONFLICT_MARKERS="${{ env.VALIDATE_GIT_MERGE_CONFLICT_MARKERS || false }}" \
-            -e VALIDATE_GITHUB_ACTIONS_ZIZMOR="${{ env.VALIDATE_GITHUB_ACTIONS_ZIZMOR || false }}" \
-            -e VALIDATE_JSCPD="${{ env.VALIDATE_JSCPD || false }}" \
-            -e VALIDATE_TRIVY="${{ env.VALIDATE_TRIVY || false }}" \
-            -v "$PWD:$PWD" -w "$PWD" \
-            ghcr.io/super-linter/super-linter:slim-${{ inputs.linter-version }}
+      - name: Run super linter.
+        uses: super-linter/super-linter/slim-${{ inputs.linter-version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_CHECKOV: ${{ env.VALIDATE_CHECKOV || 'false' }}
+          VALIDATE_ENV: ${{ env.VALIDATE_ENV || 'false' }}
+          VALIDATE_GIT_MERGE_CONFLICT_MARKERS: ${{ env.VALIDATE_GIT_MERGE_CONFLICT_MARKERS || 'false' }}
+          VALIDATE_GITHUB_ACTIONS_ZIZMOR: ${{ env.VALIDATE_GITHUB_ACTIONS_ZIZMOR || 'false' }}
+          VALIDATE_JSCPD: ${{ env.VALIDATE_JSCPD || 'false' }}
+          VALIDATE_TRIVY: ${{ env.VALIDATE_TRIVY || 'false' }}
