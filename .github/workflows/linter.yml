@@ -36,14 +36,19 @@ on:
         required: true
 
 jobs:
-  lint:
+  linter:
     name: Super Linter
 
     concurrency:
       cancel-in-progress: ${{ inputs.enable-concurrency }}
       group: ${{ inputs.concurrency-group }}
 
-    runs-on: ${{ fromJSON(inputs.os) }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJson(inputs.os) }}
 
     permissions:
       checks: write
