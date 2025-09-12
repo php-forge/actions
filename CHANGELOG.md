@@ -2,6 +2,8 @@
 
 ## v2.0.0 Under development
 
+- Enh #55: Add Super Linter reusable workflow for code quality checks (@terabytesoftw)
+
 ## v1.0.4 August 30, 2025
 
 - Bug #54: Update coverage upload condition to check for coverage driver (@terabytesoftw)
