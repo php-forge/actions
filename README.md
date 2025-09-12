@@ -1,9 +1,13 @@
+<h1 align="center">PHPForge - Reusable GitHub Actions</h1>
+
 <p align="center">
     <a href="https://github.com/php-forge/actions" target="_blank">
-        <img src="https://avatars.githubusercontent.com/u/103309199?s=400&u=ca3561c692f53ed7eb290d3bb226a2828741606f&v=4" height="100px">
+        <img 
+          alt="PHPForge Logo"
+          height="100px" 
+          src="https://avatars.githubusercontent.com/u/103309199?s=400&u=ca3561c692f53ed7eb290d3bb226a2828741606f&v=4" 
+        >
     </a>
-    <h1 align="center">PHPForge - Reusable GitHub Actions</h1>
-    <br>
 </p>
 
 [![GitHub Release](https://img.shields.io/github/v/release/php-forge/actions)](https://github.com/php-forge/actions/releases)
