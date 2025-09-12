@@ -20,6 +20,6 @@ name: linter
 
 jobs:
   super-linter:
-    uses: php-forge/actions/.github/workflows/reusable/linter.yml@main
+    uses: php-forge/actions/.github/workflows/linter.yml@main
     secrets:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
