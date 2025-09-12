@@ -36,24 +36,22 @@ on:
         required: true
 
 jobs:
-  linter:
-    name: Super Linter
-
+  lint:
     concurrency:
       cancel-in-progress: ${{ inputs.enable-concurrency }}
       group: ${{ inputs.concurrency-group }}
 
-    runs-on: ${{ matrix.os }}
+    env:
+      LINTER_VERSION: ${{ inputs.linter-version }}
 
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ${{ fromJson(inputs.os) }}
+    name: Super Linter
 
     permissions:
       checks: write
       contents: read
       statuses: write
+
+    runs-on: ${{ fromJSON(inputs.os) }}
 
     steps:
       - name: Checkout.
@@ -62,7 +60,7 @@ jobs:
           fetch-depth: ${{ inputs.checkout_fetch_depth }}
 
       - name: Run super linter.
-        uses: super-linter/super-linter/slim@${{ inputs.linter-version }}
+        uses: super-linter/super-linter/slim@${{ env.LINTER_VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_CHECKOV: ${{ env.VALIDATE_CHECKOV || 'false' }}
