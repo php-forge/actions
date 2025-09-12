@@ -220,8 +220,8 @@ jobs:
             # Database configuration
             database-env: |
                 {
-                  "MYSQL_ROOT_PASSWORD": "root",
-                  "MYSQL_DATABASE": "test"
+                    "MYSQL_ROOT_PASSWORD": "root",
+                    "MYSQL_DATABASE": "test"
                 }
             database-health-cmd: "mysqladmin ping"
             database-health-retries: 3
