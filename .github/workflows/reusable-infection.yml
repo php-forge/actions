@@ -96,7 +96,7 @@ on:
         type: string
     secrets:
       AUTH_TOKEN:
-        description: GitHub token for composer.
+        description: GitHub token.
         required: false
       STRYKER_DASHBOARD_API_KEY:
         required: true
