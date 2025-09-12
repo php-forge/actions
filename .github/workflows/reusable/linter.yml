@@ -38,7 +38,7 @@ jobs:
       cancel-in-progress: ${{ inputs.enable-concurrency }}
       group: ${{ inputs.concurrency-group }}
 
-    runs-on: ${{ inputs.os }}
+    runs-on: ${{ fromJSON(inputs.os) }}
 
     permissions:
       checks: write
