@@ -8,7 +8,7 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/php-forge/actions)](https://github.com/php-forge/actions/releases)
 
-A comprehensive collection of reusable GitHub Actions and workflows specifically designed for PHP projects. Streamline 
+A comprehensive collection of reusable GitHub Actions and workflows specifically designed for PHP projects. Streamline
 your CI/CD pipeline with battle-tested, configurable workflows for testing, static analysis, and code quality checks.
 
 ## Features
@@ -46,238 +46,237 @@ your CI/CD pipeline with battle-tested, configurable workflows for testing, stat
 
 ```yaml
 on:
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
+    pull_request:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
 
-  push:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
+    push:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
 
 name: composer-require-checker
 
 jobs:
-  dependency-check:
-    uses: php-forge/actions/.github/workflows/composer-require-checker.yml@v1
-    with:
-      command-options: "--config-file=.composer-require-checker.json"
+    dependency-check:
+        uses: php-forge/actions/.github/workflows/composer-require-checker.yml@v1
+        with:
+            command-options: "--config-file=.composer-require-checker.json"
 ```
-
 
 ### Easy Coding Standard
 
 ```yaml
 on:
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
+    pull_request:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
 
-  push:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
+    push:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
 
 name: easy-coding-standards
 
 jobs:
-  coding-standards:
-    uses: php-forge/actions/.github/workflows/ecs.yml@v1
-    with:
-      command-options: "check --ansi --no-progress-bar"
-      php-version: '["8.4"]'
+    coding-standards:
+        uses: php-forge/actions/.github/workflows/ecs.yml@v1
+        with:
+            command-options: "check --ansi --no-progress-bar"
+            php-version: '["8.4"]'
 ```
 
 ### Infection Mutation Testing {#infection}
 
 ```yaml
 on:
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
+    pull_request:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
 
-  push:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
+    push:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
 
 name: mutation-testing
 
 jobs:
-  mutation-testing:
-    uses: php-forge/actions/.github/workflows/infection.yml@v1
-    secrets:
-      STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
-    with:
-      # Infection configuration
-      command-options: "--threads=4 --min-msi=80"
-      command-coverage-options: --with-uncovered
-      
-      # PHPStan integration
-      phpstan: true      
+    mutation-testing:
+        uses: php-forge/actions/.github/workflows/infection.yml@v1
+        secrets:
+            STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+        with:
+            # Infection configuration
+            command-options: "--threads=4 --min-msi=80"
+            command-coverage-options: --with-uncovered
+
+            # PHPStan integration
+            phpstan: true
 ```
 
 ### PHPUnit
 
 ```yaml
 on:
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
+    pull_request:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
 
-  push:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
+    push:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
 
 name: build
 
 jobs:
-  phpunit:
-    uses: php-forge/actions/.github/workflows/phpunit.yml@v1
-    secrets:
-      AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-    with:
-      # Composer settings
-      composer-command: composer install --prefer-dist --no-progress
+    phpunit:
+        uses: php-forge/actions/.github/workflows/phpunit.yml@v1
+        secrets:
+            AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+            # Composer settings
+            composer-command: composer install --prefer-dist --no-progress
 
-      # Coverage settings
-      coverage-driver: pcov
-      coverage-format: clover
+            # Coverage settings
+            coverage-driver: pcov
+            coverage-format: clover
 
-      # PHP configuration
-      extensions: mbstring, intl, pdo_sqlite
-      ini-values: date.timezone='UTC', memory_limit=-1
+            # PHP configuration
+            extensions: mbstring, intl, pdo_sqlite
+            ini-values: date.timezone='UTC', memory_limit=-1
 
-      # Operating systems
-      os: '["ubuntu-latest", "windows-2022"]'
+            # Operating systems
+            os: '["ubuntu-latest", "windows-2022"]'
 
-      # PHP versions to test
-      php-version: '["8.1", "8.2", "8.3", "8.4"]'
-            
-      # PHPUnit configuration
-      phpunit-configuration: phpunit.xml
-      phpunit-exclude-group: integration
-      phpunit-group: unit            
+            # PHP versions to test
+            php-version: '["8.1", "8.2", "8.3", "8.4"]'
+
+            # PHPUnit configuration
+            phpunit-configuration: phpunit.xml
+            phpunit-exclude-group: integration
+            phpunit-group: unit
 ```
 
 ### PHPUnit with Database
 
 ```yaml
 on:
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
+    pull_request:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
 
-  push:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
+    push:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
 
 name: build-mysql
-      
+
 jobs:
-  database-tests:
-    uses: php-forge/actions/.github/workflows/phpunit-database.yml@v1
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-    with:
-      # Database configuration
-      database-env: |
-        {
-          "MYSQL_ROOT_PASSWORD": "root",
-          "MYSQL_DATABASE": "test"
-        }
-      database-health-cmd: "mysqladmin ping"
-      database-health-retries: 3
-      database-image: mysql
-      database-port: 3306
-      database-type: mysql
-      database-versions: '["8.0", "8.4", "latest"]'
-      extensions: pdo, pdo_mysql
-      php-version: '["8.4"]'
-      phpunit-group: mysql      
+    database-tests:
+        uses: php-forge/actions/.github/workflows/phpunit-database.yml@v1
+        secrets:
+            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+            # Database configuration
+            database-env: |
+                {
+                  "MYSQL_ROOT_PASSWORD": "root",
+                  "MYSQL_DATABASE": "test"
+                }
+            database-health-cmd: "mysqladmin ping"
+            database-health-retries: 3
+            database-image: mysql
+            database-port: 3306
+            database-type: mysql
+            database-versions: '["8.0", "8.4", "latest"]'
+            extensions: pdo, pdo_mysql
+            php-version: '["8.4"]'
+            phpunit-group: mysql
 ```
 
 ### PHPStan Static Analysis
 
 ```yaml
 on:
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
+    pull_request:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
 
-  push:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
+    push:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
 
 name: static-analysis
 
 jobs:
-  static-analysis:
-    uses: php-forge/actions/.github/workflows/phpstan.yml@v1
-    with:
-      # PHPStan configuration
-      configuration: phpstan.neon
-      command-options: "analyse --error-format=checkstyle | cs2pr"
-      
-      # Environment
-      php-version: '["8.4"]'
-      tools: cs2pr
+    static-analysis:
+        uses: php-forge/actions/.github/workflows/phpstan.yml@v1
+        with:
+            # PHPStan configuration
+            configuration: phpstan.neon
+            command-options: "analyse --error-format=checkstyle | cs2pr"
+
+            # Environment
+            php-version: '["8.4"]'
+            tools: cs2pr
 ```
 
 **Supported Databases:**
 
-| Database                     | Docker Image                        | Default Port | Health Check Command           |
-|------------------------------|-------------------------------------|--------------|--------------------------------|
-| MySQL                        | `mysql`                             | 3306         | `mysqladmin ping`              |
-| PostgreSQL                   | `postgres`                          | 5432         | `pg_isready`                   |
-| SQL Server                   | `mcr.microsoft.com/mssql/server`    | 1433         | `sqlcmd -Q "SELECT 1"`         |
-| Oracle                       | `gvenzl/oracle-xe`                  | 1521         | `sqlplus -S / as sysdba`       |
+| Database   | Docker Image                     | Default Port | Health Check Command     |
+| ---------- | -------------------------------- | ------------ | ------------------------ |
+| MySQL      | `mysql`                          | 3306         | `mysqladmin ping`        |
+| PostgreSQL | `postgres`                       | 5432         | `pg_isready`             |
+| SQL Server | `mcr.microsoft.com/mssql/server` | 1433         | `sqlcmd -Q "SELECT 1"`   |
+| Oracle     | `gvenzl/oracle-xe`               | 1521         | `sqlplus -S / as sysdba` |
 
 ## Our social networks
 
