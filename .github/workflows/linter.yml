@@ -25,6 +25,11 @@ on:
         required: false
         type: string
 
+    secrets:
+      AUTH_TOKEN:
+        description: GitHub token.
+        required: true
+
 jobs:
   lint:
     concurrency:
@@ -49,7 +54,7 @@ jobs:
       - name: Run super linter.
         uses: super-linter/super-linter/slim@v.8.1.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.AUTH_TOKEN }}
           VALIDATE_CHECKOV: ${{ env.VALIDATE_CHECKOV || 'false' }}
           VALIDATE_ENV: ${{ env.VALIDATE_ENV || 'false' }}
           VALIDATE_GIT_MERGE_CONFLICT_MARKERS: >-
