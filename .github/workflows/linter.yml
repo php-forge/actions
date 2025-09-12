@@ -19,7 +19,7 @@ on:
 name: linter
 
 jobs:
-  phpunit:
+  super-linter:
     uses: php-forge/actions/.github/workflows/reusable/linter.yml@main
     secrets:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
