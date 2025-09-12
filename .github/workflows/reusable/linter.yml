@@ -76,7 +76,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_CHECKOV: ${{ env.VALIDATE_CHECKOV || 'false' }}
           VALIDATE_ENV: ${{ env.VALIDATE_ENV || 'false' }}
-          VALIDATE_GIT_MERGE_CONFLICT_MARKERS: ${{ env.VALIDATE_GIT_MERGE_CONFLICT_MARKERS || 'false' }}
-          VALIDATE_GITHUB_ACTIONS_ZIZMOR: ${{ env.VALIDATE_GITHUB_ACTIONS_ZIZMOR || 'false' }}
+          VALIDATE_GIT_MERGE_CONFLICT_MARKERS: >-
+            ${{ env.VALIDATE_GIT_MERGE_CONFLICT_MARKERS || 'false' }}
+          VALIDATE_GITHUB_ACTIONS_ZIZMOR: >-
+            ${{ env.VALIDATE_GITHUB_ACTIONS_ZIZMOR || 'false' }}
           VALIDATE_JSCPD: ${{ env.VALIDATE_JSCPD || 'false' }}
           VALIDATE_TRIVY: ${{ env.VALIDATE_TRIVY || 'false' }}
