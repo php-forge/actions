@@ -1,3 +1,4 @@
+---
 name: PHPUnit Test Runner.
 description: Run PHPUnit tests with coverage and configurable options.
 

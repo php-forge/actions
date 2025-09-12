@@ -1,3 +1,4 @@
+---
 name: build
 
 on:
@@ -117,7 +118,7 @@ jobs:
         run: vendor/bin/codecept build
 
       - name: Run tests with codeception with code coverage.
-        continue-on-error:  ${{ inputs.debug }}
+        continue-on-error: ${{ inputs.debug }}
         run: ${{ inputs.codeception-command }}
 
       - name: Upload coverage to Codecov.
