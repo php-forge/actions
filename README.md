@@ -125,7 +125,7 @@ name: mutation-testing
 
 jobs:
     mutation-testing:
-        uses: php-forge/actions/.github/workflows/infection.yml@v1
+        uses: php-forge/actions/.github/workflows/reusable-infection.yml@v2
         secrets:
             STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
         with:
