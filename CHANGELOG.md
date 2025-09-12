@@ -1,5 +1,7 @@
 # Change Log
 
+## v2.0.0 Under development
+
 ## v1.0.4 August 30, 2025
 
 - Bug #54: Update coverage upload condition to check for coverage driver (@terabytesoftw)
