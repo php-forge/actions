@@ -313,8 +313,7 @@ jobs:
             tools: cs2pr
 ```
 
-> **Note**: YAML files should use 2-space indentation. This example shows correct YAML syntax - copy it to your 
-`.github/workflows/*.yml` files as-is.
+> **Note**: YAML files should use 2-space indentation. This example shows correct YAML syntax - copy it to your `.github/workflows/*.yml` files as-is.
 
 **Supported Databases:**
 
