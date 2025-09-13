@@ -38,8 +38,8 @@ your CI/CD pipeline with battle-tested, configurable workflows for testing, stat
 
 - [`composer-require-checker.yml`](https://github.com/php-forge/actions/blob/main/.github/workflows/composer-require-checker.yml) - Dependency validation.
 - [`ecs.yml`](https://github.com/php-forge/actions/blob/main/.github/workflows/ecs.yml) - Easy Coding Standard.
-- [`linter.yml`](https://github.com/php-forge/actions/blob/main/.github/workflows/reusable-linter.yml) - Super Linter for multi-language linting.
 - [`phpstan.yml`](https://github.com/php-forge/actions/blob/main/.github/workflows/phpstan.yml) - Static analysis.
+- [`super-linter.yml`](https://github.com/php-forge/actions/blob/main/.github/workflows/super-linter.yml) - Super Linter for multi-language linting.
 
 ### Utility Actions
 
@@ -153,27 +153,6 @@ jobs:
       command-coverage-options: --with-uncovered
       # PHPStan integration
       phpstan: true
-```
-<!-- prettier-ignore-end -->
-<!-- editorconfig-checker-enable -->
-
-### Linting with Super-Linter
-
-<!-- editorconfig-checker-disable -->
-<!-- prettier-ignore-start -->
-```yaml
----
-on:
-  - pull_request
-  - push
-
-name: linter
-
-jobs:
-  linter:
-    uses: php-forge/actions/.github/workflows/reusable-linter.yml@main
-    secrets:
-      AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 <!-- prettier-ignore-end -->
 <!-- editorconfig-checker-enable -->
@@ -315,6 +294,27 @@ jobs:
       # Environment
       php-version: '["8.4"]'
       tools: cs2pr
+```
+<!-- prettier-ignore-end -->
+<!-- editorconfig-checker-enable -->
+
+### Super Linter
+
+<!-- editorconfig-checker-disable -->
+<!-- prettier-ignore-start -->
+```yaml
+---
+on:
+  - pull_request
+  - push
+
+name: linter
+
+jobs:
+  linter:
+    uses: php-forge/actions/.github/workflows/super-linter.yml@main
+    secrets:
+      AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 <!-- prettier-ignore-end -->
 <!-- editorconfig-checker-enable -->
