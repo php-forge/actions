@@ -1,3 +1,4 @@
+---
 name: build
 
 on:
@@ -66,8 +67,8 @@ on:
 
     secrets:
       AUTH_TOKEN:
-        description: GitHub token for composer.
-        required: false
+        description: GitHub token.
+        required: true
       CODECOV_TOKEN:
         description: Codecov token.
         required: false
@@ -117,15 +118,15 @@ jobs:
         run: vendor/bin/codecept build
 
       - name: Run tests with codeception with code coverage.
-        continue-on-error:  ${{ inputs.debug }}
+        continue-on-error: ${{ inputs.debug }}
         run: ${{ inputs.codeception-command }}
 
       - name: Upload coverage to Codecov.
-        if: inputs.coverage-driver != 'none' && matrix.os == 'ubuntu-latest' && matrix.php-version == '8.1'
+        if: ${{!cancelled() && inputs.coverage-driver != 'none'}}
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./${{ inputs.coverage-file }}
+          files: ./${{ inputs.coverage-file }}
 
       - name: Archive codeception results
         if: ${{ inputs.debug }}

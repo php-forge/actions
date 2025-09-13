@@ -1,3 +1,4 @@
+---
 name: infection
 
 on:
@@ -35,7 +36,7 @@ on:
         type: string
       concurrency-group:
         description: Concurrency group name.
-        default: ${{ github.workflow }}-${{ github.ref }}
+        default: infection/${{ github.workflow }}-${{ github.ref }}
         required: false
         type: string
       coverage-driver:
@@ -95,18 +96,18 @@ on:
         type: string
     secrets:
       AUTH_TOKEN:
-        description: GitHub token for composer.
+        description: GitHub token.
         required: false
       STRYKER_DASHBOARD_API_KEY:
         required: true
 
 jobs:
   infection:
-    name: PHP ${{ matrix.php-version }}-${{ matrix.os }}
-
     concurrency:
-      group:  ${{ matrix.os }}-${{ matrix.php-version }}-${{ inputs.concurrency-group }}
       cancel-in-progress: ${{ inputs.enable-concurrency }}
+      group: ${{ inputs.concurrency-group }}
+
+    name: PHP ${{ matrix.php-version }}-${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
 
@@ -147,7 +148,10 @@ jobs:
 
       - name: Run PHPStan (build cache).
         if: ${{ inputs.phpstan }}
-        run: vendor/bin/phpstan --configuration=${{ inputs.phpstan-configuration }} analyse
+        run: >-
+          vendor/bin/phpstan \
+          --configuration=${{ inputs.phpstan-configuration }} \
+          analyse
 
       - name: Run infection.
         run: |
@@ -163,7 +167,7 @@ jobs:
         if: ${{ inputs.debug }}
         uses: actions/upload-artifact@v4
         with:
-          name: infection-${{ matrix.php }}-${{ matrix.os }}
+          name: infection-${{ matrix.php-version }}-${{ matrix.os }}
           path: ./infection.log
 
       - name: Download all workflow run artifacts.

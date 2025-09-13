@@ -1,3 +1,4 @@
+---
 name: phpunit-database
 
 on:
@@ -137,8 +138,8 @@ on:
 
     secrets:
       AUTH_TOKEN:
-        description: GitHub token for composer.
-        required: false
+        description: GitHub token.
+        required: true
       CODECOV_TOKEN:
         description: Codecov token.
         required: false

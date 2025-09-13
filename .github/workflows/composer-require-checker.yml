@@ -1,3 +1,4 @@
+---
 name: composer-require-checker
 
 on:
@@ -56,15 +57,15 @@ on:
 
     secrets:
       AUTH_TOKEN:
-        description: GitHub token for composer.
-        required: false
+        description: GitHub token.
+        required: true
 
 jobs:
   composer-require-checker:
     name: PHP ${{ matrix.php-version }}-${{ matrix.os }}
 
     concurrency:
-      group:  ${{ matrix.os }}-${{ matrix.php-version }}-${{ inputs.concurrency-group }}
+      group: ${{ matrix.os }}-${{ matrix.php-version }}-${{ inputs.concurrency-group }}
       cancel-in-progress: ${{ inputs.enable-concurrency }}
 
     runs-on: ${{ matrix.os }}
