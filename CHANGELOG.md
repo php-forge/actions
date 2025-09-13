@@ -8,6 +8,7 @@
 - Bug #58: Better naming workflow `reusable-linter.yml` to `super-linter.yml` (@terabytesoftw)
 - Bug #59: Add permissions to `linter` job in `linter.yml` and `super-linter.yml` (@terabytesoftw)
 - Bug #60: Update `OS` description to specify `JSON` array format for runner inputs (@terabytesoftw)
+- Bug #61: Update `README.md` to include supported databases with Docker images and health check commands (@terabytesoftw)
 
 ## v1.0.4 August 30, 2025
 
