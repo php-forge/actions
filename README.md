@@ -259,6 +259,15 @@ jobs:
 <!-- prettier-ignore-end -->
 <!-- editorconfig-checker-enable -->
 
+**Supported Databases:**
+
+| Database   | Docker Image                     | Default Port | Health Check Command     |
+| ---------- | -------------------------------- | ------------ | ------------------------ |
+| MySQL      | `mysql`                          | 3306         | `mysqladmin ping`        |
+| PostgreSQL | `postgres`                       | 5432         | `pg_isready`             |
+| SQL Server | `mcr.microsoft.com/mssql/server` | 1433         | `sqlcmd -Q "SELECT 1"`   |
+| Oracle     | `gvenzl/oracle-xe`               | 1521         | `sqlplus -S / as sysdba` |
+
 ### PHPStan Static Analysis
 
 <!-- editorconfig-checker-disable -->
@@ -324,15 +333,6 @@ jobs:
 <!-- editorconfig-checker-enable -->
 
 > **Note**: YAML files should use 2-space indentation. This example shows correct YAML syntax - copy it to your `.github/workflows/*.yml` files as-is.
-
-**Supported Databases:**
-
-| Database   | Docker Image                     | Default Port | Health Check Command     |
-| ---------- | -------------------------------- | ------------ | ------------------------ |
-| MySQL      | `mysql`                          | 3306         | `mysqladmin ping`        |
-| PostgreSQL | `postgres`                       | 5432         | `pg_isready`             |
-| SQL Server | `mcr.microsoft.com/mssql/server` | 1433         | `sqlcmd -Q "SELECT 1"`   |
-| Oracle     | `gvenzl/oracle-xe`               | 1521         | `sqlplus -S / as sysdba` |
 
 ## Package information
 
