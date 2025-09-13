@@ -21,6 +21,7 @@ your CI/CD pipeline with battle-tested, configurable workflows for testing, stat
 - ✅ **Complete Testing Suite** - PHPUnit, Codeception, and mutation testing with Infection.
 - ✅ **Database Testing** - Multi-database support (MySQL, PostgreSQL, SQLite, etc.).
 - ✅ **Dependency Management** - Composer require checker for dependency validation.
+- ✅ **Linting** - Super Linter for multi-language linting.
 - ✅ **Static Analysis** - PHPStan integration.
 - ✅ **Zero Configuration** - Sensible defaults with extensive customization options.
 
