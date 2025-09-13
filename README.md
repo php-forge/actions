@@ -49,6 +49,7 @@ your CI/CD pipeline with battle-tested, configurable workflows for testing, stat
 ### Composer Require Checker
 
 ```yaml
+---
 on:
     pull_request:
         paths-ignore:
@@ -78,6 +79,7 @@ jobs:
 ### Easy Coding Standard
 
 ```yaml
+---
 on:
     pull_request:
         paths-ignore:
@@ -108,6 +110,7 @@ jobs:
 ### Infection Mutation Testing {#infection}
 
 ```yaml
+---
 on:
     pull_request:
         paths-ignore:
@@ -141,9 +144,40 @@ jobs:
             phpstan: true
 ```
 
+### Linting with Super-Linter
+
+```yaml
+---
+on:
+    pull_request:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
+
+    push:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
+
+name: linter
+
+jobs:
+    linter:
+        uses: php-forge/actions/.github/workflows/reusable-linter.yml@main
+        secrets:
+            AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
 ### PHPUnit
 
 ```yaml
+---
 on:
     pull_request:
         paths-ignore:
@@ -196,6 +230,7 @@ jobs:
 ### PHPUnit with Database
 
 ```yaml
+---
 on:
     pull_request:
         paths-ignore:
@@ -241,6 +276,7 @@ jobs:
 ### PHPStan Static Analysis
 
 ```yaml
+---
 on:
     pull_request:
         paths-ignore:
@@ -297,4 +333,3 @@ jobs:
 ## License
 
 [![License](https://img.shields.io/github/license/yii2-extensions/psr-bridge?style=for-the-badge&logo=opensourceinitiative&logoColor=white&labelColor=333333)](LICENSE)
-
