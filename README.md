@@ -12,7 +12,6 @@
 </p>
 <!-- markdownlint-enable MD041 -->
 
-
 [![GitHub Release](https://img.shields.io/github/v/release/php-forge/actions)](https://github.com/php-forge/actions/releases)
 
 A comprehensive collection of reusable GitHub Actions and workflows specifically designed for PHP projects. Streamline
