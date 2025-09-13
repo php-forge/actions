@@ -81,30 +81,30 @@ jobs:
 ```yaml
 ---
 on:
-    pull_request:
-        paths-ignore:
-            - "docs/**"
-            - "README.md"
-            - "CHANGELOG.md"
-            - ".gitignore"
-            - ".gitattributes"
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - "CHANGELOG.md"
+      - ".gitignore"
+      - ".gitattributes"
 
-    push:
-        paths-ignore:
-            - "docs/**"
-            - "README.md"
-            - "CHANGELOG.md"
-            - ".gitignore"
-            - ".gitattributes"
+  push:
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - "CHANGELOG.md"
+      - ".gitignore"
+      - ".gitattributes"
 
 name: easy-coding-standards
 
 jobs:
-    coding-standards:
-        uses: php-forge/actions/.github/workflows/ecs.yml@v1
-        with:
-            command-options: "check --ansi --no-progress-bar"
-            php-version: '["8.4"]'
+  coding-standards:
+    uses: php-forge/actions/.github/workflows/ecs.yml@v1
+    with:
+      command-options: "check --ansi --no-progress-bar"
+      php-version: '["8.4"]'
 ```
 
 ### Infection Mutation Testing {#infection}
