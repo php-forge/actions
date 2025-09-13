@@ -31,7 +31,7 @@ on:
         required: true
 
 jobs:
-  lint:
+  linter:
     concurrency:
       cancel-in-progress: ${{ inputs.enable-concurrency }}
       group: ${{ inputs.concurrency-group }}
