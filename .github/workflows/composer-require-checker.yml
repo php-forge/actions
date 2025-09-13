@@ -35,7 +35,7 @@ on:
         required: false
         type: string
       os:
-        description: Operating systems to test, separated by comma.
+        description: OS runner as a JSON array string '["ubuntu-latest"]'.
         default: '["ubuntu-latest"]'
         required: false
         type: string
