@@ -3,6 +3,7 @@
 ## v2.0.0 Under development
 
 - Enh #55: Add Super Linter reusable workflow for code quality checks (@terabytesoftw)
+- Fix #58: Better naming `reusable-linter.yml` to `super-linter.yml` (@terabytesoftw)
 
 ## v1.0.4 August 30, 2025
 
