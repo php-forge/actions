@@ -23,4 +23,5 @@ jobs:
     uses: php-forge/actions/.github/workflows/reusable-linter.yml@main
     secrets:
       AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
       validate-microsoft-rules: true
