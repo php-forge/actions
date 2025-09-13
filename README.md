@@ -12,8 +12,6 @@
 </p>
 <!-- markdownlint-enable MD041 -->
 
-[![GitHub Release](https://img.shields.io/github/v/release/php-forge/actions)](https://github.com/php-forge/actions/releases)
-
 A comprehensive collection of reusable GitHub Actions and workflows specifically designed for PHP projects. Streamline
 your CI/CD pipeline with battle-tested, configurable workflows for testing, static analysis, and code quality checks.
 
@@ -284,10 +282,19 @@ jobs:
 | SQL Server | `mcr.microsoft.com/mssql/server` | 1433         | `sqlcmd -Q "SELECT 1"`   |
 | Oracle     | `gvenzl/oracle-xe`               | 1521         | `sqlplus -S / as sysdba` |
 
+## Package information
+
+[![GitHub Release](https://img.shields.io/github/v/release/php-forge/actions?style=for-the-badge&logo=git&logoColor=white&label=Release)](https://github.com/php-forge/actions/releases)
+
+## Quality code
+
+[![Super-Linter](https://img.shields.io/github/actions/workflow/status/php-forge/actions/linter.yml?style=for-the-badge&label=Super-Linter&logo=github)](https://github.com/php-forge/actions/actions/workflows/linter.yml)
+
 ## Our social networks
 
-[![X](https://img.shields.io/badge/follow-@terabytesoftw-1DA1F2?logo=x&logoColor=1DA1F2&labelColor=555555&style=flat)](https://x.com/Terabytesoftw)
+[![Follow on X](https://img.shields.io/badge/-Follow%20on%20X-1DA1F2.svg?style=for-the-badge&logo=x&logoColor=white&labelColor=000000)](https://x.com/Terabytesoftw)
 
 ## License
 
-[![License](https://img.shields.io/github/license/php-forge/actions)](LICENSE.md)
+[![License](https://img.shields.io/github/license/yii2-extensions/psr-bridge?style=for-the-badge&logo=opensourceinitiative&logoColor=white&labelColor=333333)](LICENSE)
+
