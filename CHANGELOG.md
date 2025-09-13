@@ -5,7 +5,8 @@
 - Enh #55: Add Super Linter reusable workflow for code quality checks (@terabytesoftw)
 - Bug #56: Add `linter.yml` workflow configuration for pull requests and pushes (@terabytesoftw)
 - Bug #57: Better naming workflow `linter.yml` to `reusable-linter.yml` (@terabytesoftw)
-- Fix #58: Better naming workflow `reusable-linter.yml` to `super-linter.yml` (@terabytesoftw)
+- Bug #58: Better naming workflow `reusable-linter.yml` to `super-linter.yml` (@terabytesoftw)
+- Bug #59: Add permissions to `linter` job in `linter.yml` and `super-linter.yml` (@terabytesoftw)
 
 ## v1.0.4 August 30, 2025
 

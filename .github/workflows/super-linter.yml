@@ -38,11 +38,6 @@ jobs:
 
     name: Super Linter
 
-    permissions:
-      checks: write
-      contents: read
-      statuses: write
-
     runs-on: ${{ fromJSON(inputs.os) }}
 
     steps:
