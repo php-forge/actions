@@ -48,36 +48,8 @@ your CI/CD pipeline with battle-tested, configurable workflows for testing, stat
 
 ### Composer Require Checker
 
-```yaml
----
-on:
-    pull_request:
-        paths-ignore:
-            - "docs/**"
-            - "README.md"
-            - "CHANGELOG.md"
-            - ".gitignore"
-            - ".gitattributes"
-
-    push:
-        paths-ignore:
-            - "docs/**"
-            - "README.md"
-            - "CHANGELOG.md"
-            - ".gitignore"
-            - ".gitattributes"
-
-name: composer-require-checker
-
-jobs:
-    dependency-check:
-        uses: php-forge/actions/.github/workflows/composer-require-checker.yml@v1
-        with:
-            command-options: "--config-file=.composer-require-checker.json"
-```
-
-### Easy Coding Standard
-
+<!-- editorconfig-checker-disable -->
+<!-- prettier-ignore-start -->
 ```yaml
 ---
 on:
@@ -97,14 +69,46 @@ on:
       - ".gitignore"
       - ".gitattributes"
 
+name: composer-require-checker
+
+jobs:
+  dependency-check:
+    uses: php-forge/actions/.github/workflows/composer-require-checker.yml@v1
+    with:
+      command-options: "--config-file=.composer-require-checker.json"
+```
+<!-- prettier-ignore-end -->
+<!-- editorconfig-checker-enable -->
+
+### Easy Coding Standard
+
+```yaml
+---
+on:
+    pull_request:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
+
+    push:
+        paths-ignore:
+            - "docs/**"
+            - "README.md"
+            - "CHANGELOG.md"
+            - ".gitignore"
+            - ".gitattributes"
+
 name: easy-coding-standards
 
 jobs:
-  coding-standards:
-    uses: php-forge/actions/.github/workflows/ecs.yml@v1
-    with:
-      command-options: "check --ansi --no-progress-bar"
-      php-version: '["8.4"]'
+    coding-standards:
+        uses: php-forge/actions/.github/workflows/ecs.yml@v1
+        with:
+            command-options: "check --ansi --no-progress-bar"
+            php-version: '["8.4"]'
 ```
 
 ### Infection Mutation Testing {#infection}
@@ -308,6 +312,9 @@ jobs:
             php-version: '["8.4"]'
             tools: cs2pr
 ```
+
+> **Note**: YAML files should use 2-space indentation. This example shows correct YAML syntax - copy it to your 
+`.github/workflows/*.yml` files as-is.
 
 **Supported Databases:**
 
