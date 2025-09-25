@@ -1,6 +1,6 @@
 # Changelog
 
-## v.2.0.1 Under development
+## v2.0.1 September 25, 2025
 
 - Bug #62: Improve command building in `phpunit` and `infection` action for better readability and maintainability (@terabytesoftw)
 - Bug #63: Change `AUTH_TOKEN` requirement to `false` in multiple workflow files (@terabytesoftw)
@@ -16,9 +16,10 @@
 - Bug #60: Update `OS` description to specify `JSON` array format for runner inputs (@terabytesoftw)
 - Bug #61: Update `README.md` to include supported databases with Docker images and health check commands (@terabytesoftw)
 
-## v2 September 13, 2025
+## v2 September 25, 2025
 
 - Initial release from v.2.0.0
+- Update last changes from v.2.0.1
 
 ## v1.0.4 August 30, 2025
 
