@@ -54,6 +54,11 @@ on:
         default: false
         required: false
         type: boolean
+      validate_php_builtin:
+        description: Enable PHP Builtin validation.
+        default: false
+        required: false
+        type: boolean
       validate_trivy:
         description: Enable Trivy validation.
         default: false
@@ -93,4 +98,5 @@ jobs:
             ${{ inputs.validate_git_merge_conflict_markers }}
           VALIDATE_JSCPD: ${{ inputs.validate_jscpd }}
           VALIDATE_PHP: ${{ inputs.validate_php }}
+          VALIDATE_PHP_BUILTIN: ${{ inputs.validate_php_builtin }}
           VALIDATE_TRIVY: ${{ inputs.validate_trivy }}
