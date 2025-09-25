@@ -24,6 +24,41 @@ on:
         default: '["ubuntu-latest"]'
         required: false
         type: string
+      validate_checkov:
+        description: Enable Checkov validation.
+        default: false
+        required: false
+        type: boolean
+      validate_env:
+        description: Enable ENV file validation.
+        default: false
+        required: false
+        type: boolean
+      validate_github_actions_zizmor:
+        description: Enable GitHub Actions Zizmor validation.
+        default: false
+        required: false
+        type: boolean
+      validate_git_merge_conflict_markers:
+        description: Enable Git merge conflict markers validation.
+        default: false
+        required: false
+        type: boolean
+      validate_jscpd:
+        description: Enable JSCPD validation.
+        default: false
+        required: false
+        type: boolean
+      validate_php:
+        description: Enable PHP validation.
+        default: false
+        required: false
+        type: boolean
+      validate_trivy:
+        description: Enable Trivy validation.
+        default: false
+        required: false
+        type: boolean
 
     secrets:
       AUTH_TOKEN:
@@ -50,11 +85,12 @@ jobs:
         uses: super-linter/super-linter/slim@v8.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.AUTH_TOKEN }}
-          VALIDATE_CHECKOV: ${{ env.VALIDATE_CHECKOV || 'false' }}
-          VALIDATE_ENV: ${{ env.VALIDATE_ENV || 'false' }}
-          VALIDATE_GIT_MERGE_CONFLICT_MARKERS: >-
-            ${{ env.VALIDATE_GIT_MERGE_CONFLICT_MARKERS || 'false' }}
+          VALIDATE_CHECKOV: ${{ inputs.validate_checkov }}
+          VALIDATE_ENV: ${{ inputs.validate_env }}
           VALIDATE_GITHUB_ACTIONS_ZIZMOR: >-
-            ${{ env.VALIDATE_GITHUB_ACTIONS_ZIZMOR || 'false' }}
-          VALIDATE_JSCPD: ${{ env.VALIDATE_JSCPD || 'false' }}
-          VALIDATE_TRIVY: ${{ env.VALIDATE_TRIVY || 'false' }}
+            ${{ inputs.validate_github_actions_zizmor }}
+          VALIDATE_GIT_MERGE_CONFLICT_MARKERS: >-
+            ${{ inputs.validate_git_merge_conflict_markers }}
+          VALIDATE_JSCPD: ${{ inputs.validate_jscpd }}
+          VALIDATE_PHP: ${{ inputs.validate_php }}
+          VALIDATE_TRIVY: ${{ inputs.validate_trivy }}
