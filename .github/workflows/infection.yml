@@ -154,12 +154,14 @@ jobs:
 
       - name: Run PHPStan (build cache).
         if: ${{ inputs.phpstan }}
+        shell: bash
         run: |-
           vendor/bin/phpstan \
-            --configuration=${{ inputs.phpstan-configuration }} \
+            --configuration="${{ inputs.phpstan-configuration }}" \
             analyse
 
       - name: Run infection.
+        shell: bash
         run: |-
           vendor/bin/${{ inputs.command }} \
             ${{ inputs.command-options }} \
