@@ -2,6 +2,8 @@
 
 ## v.2.0.1 Under development
 
+- Bug #62: Improve command building in `phpunit` and `infection` action for better readability and maintainability (@terabytesoftw)
+
 ## v2 September 13, 2025
 
 - Enh #55: Add Super Linter reusable workflow for code quality checks (@terabytesoftw)
