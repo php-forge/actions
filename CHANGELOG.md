@@ -1,5 +1,7 @@
 # Changelog
 
+## v2.0.2 Under development
+
 ## v2.0.1 September 25, 2025
 
 - Bug #62: Improve command building in `phpunit` and `infection` action for better readability and maintainability (@terabytesoftw)
