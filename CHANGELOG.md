@@ -4,8 +4,9 @@
 
 - Bug #62: Improve command building in `phpunit` and `infection` action for better readability and maintainability (@terabytesoftw)
 
-## v2 September 13, 2025
+## v2.0.0 September 13, 2025
 
+- Initial release for v2
 - Enh #55: Add Super Linter reusable workflow for code quality checks (@terabytesoftw)
 - Bug #56: Add `linter.yml` workflow configuration for pull requests and pushes (@terabytesoftw)
 - Bug #57: Better naming workflow `linter.yml` to `reusable-linter.yml` (@terabytesoftw)
@@ -13,6 +14,10 @@
 - Bug #59: Add permissions to `linter` job in `linter.yml` and `super-linter.yml` (@terabytesoftw)
 - Bug #60: Update `OS` description to specify `JSON` array format for runner inputs (@terabytesoftw)
 - Bug #61: Update `README.md` to include supported databases with Docker images and health check commands (@terabytesoftw)
+
+## v2 September 13, 2025
+
+- Initial release from v.2.0.0
 
 ## v1.0.4 August 30, 2025
 
