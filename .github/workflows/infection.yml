@@ -26,12 +26,12 @@ on:
         type: string
       composer-command:
         description: Composer command to run.
-        default: >-
-          composer update
-            --prefer-dist
-            --no-interaction
-            --no-progress
-            --optimize-autoloader
+        default: |-
+          composer update \
+            --prefer-dist \
+            --no-interaction \
+            --no-progress \
+            --optimize-autoloader \
             --ansi
         required: false
         type: string
@@ -154,17 +154,17 @@ jobs:
 
       - name: Run PHPStan (build cache).
         if: ${{ inputs.phpstan }}
-        run: >-
-          vendor/bin/phpstan
-            --configuration=${{ inputs.phpstan-configuration }}
+        run: |-
+          vendor/bin/phpstan \
+            --configuration=${{ inputs.phpstan-configuration }} \
             analyse
 
       - name: Run infection.
-        run: >-
-          vendor/bin/${{ inputs.command }}
-            ${{ inputs.command-options }}
-            ${{ inputs.command-coverage-options }}
-            ${{ inputs.phpstan && '--static-analysis-tool=phpstan' || '' }}
+        run: |-
+          vendor/bin/${{ inputs.command }} \
+            ${{ inputs.command-options }} \
+            ${{ inputs.command-coverage-options }} \
+            ${{ inputs.phpstan && '--static-analysis-tool=phpstan' || '' }} \
             ${{ inputs.framework-options }}
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
