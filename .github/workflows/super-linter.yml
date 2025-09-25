@@ -59,6 +59,21 @@ on:
         default: false
         required: false
         type: boolean
+      validate_php_phpcs:
+        description: Enable PHP PHPCS validation.
+        default: false
+        required: false
+        type: boolean
+      validate_php_phpstan:
+        description: Enable PHP PHPStan validation.
+        default: false
+        required: false
+        type: boolean
+      validate_php_psalm:
+        description: Enable PHP Psalm validation.
+        default: false
+        required: false
+        type: boolean
       validate_trivy:
         description: Enable Trivy validation.
         default: false
@@ -99,4 +114,7 @@ jobs:
           VALIDATE_JSCPD: ${{ inputs.validate_jscpd }}
           VALIDATE_PHP: ${{ inputs.validate_php }}
           VALIDATE_PHP_BUILTIN: ${{ inputs.validate_php_builtin }}
+          VALIDATE_PHP_PHPCS: ${{ inputs.validate_php_phpcs }}
+          VALIDATE_PHP_PHPSTAN: ${{ inputs.validate_php_phpstan }}
+          VALIDATE_PHP_PSALM: ${{ inputs.validate_php_psalm }}
           VALIDATE_TRIVY: ${{ inputs.validate_trivy }}
