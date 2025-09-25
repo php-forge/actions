@@ -10,7 +10,7 @@ inputs:
     type: string
   composer-command:
     description: Composer command to run.
-    default: >-
+    default: |-
       composer update --prefer-dist \
       --no-interaction \
       --no-progress \
