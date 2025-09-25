@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.0.2 Under development
+## v2.0.2 September 25, 2025
 
 - Bug #64: Add validation input options for `super-linter.yml` actions (@terabytesoftw)
 
@@ -22,8 +22,9 @@
 
 ## v2 September 25, 2025
 
-- Initial release from v.2.0.0
-- Update last changes from v.2.0.1
+- Initial release from `v2.0.0`
+- Update last changes from `v2.0.1`
+- Update last changes from `v2.0.2`
 
 ## v1.0.4 August 30, 2025
 
