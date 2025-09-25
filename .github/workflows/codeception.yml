@@ -68,7 +68,7 @@ on:
     secrets:
       AUTH_TOKEN:
         description: GitHub token.
-        required: true
+        required: false
       CODECOV_TOKEN:
         description: Codecov token.
         required: false
