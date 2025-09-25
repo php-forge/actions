@@ -2,6 +2,8 @@
 
 ## v2.0.2 Under development
 
+- Bug #64: Add validation input options for `super-linter.yml` actions (@terabytesoftw)
+
 ## v2.0.1 September 25, 2025
 
 - Bug #62: Improve command building in `phpunit` and `infection` action for better readability and maintainability (@terabytesoftw)
