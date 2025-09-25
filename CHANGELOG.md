@@ -3,6 +3,7 @@
 ## v.2.0.1 Under development
 
 - Bug #62: Improve command building in `phpunit` and `infection` action for better readability and maintainability (@terabytesoftw)
+- Bug #63: Change `AUTH_TOKEN` requirement to `false` in multiple workflow files (@terabytesoftw)
 
 ## v2.0.0 September 13, 2025
 
