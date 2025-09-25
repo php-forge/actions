@@ -63,60 +63,66 @@ runs:
   using: composite
   steps:
     - name: Build PHPUnit command.
-      shell: bash
       id: build-cmd
+      shell: bash
       run: |
-        PHPUNIT_CMD="${{ inputs.path }} --colors=always"
+        PATH_INPUT="${{ inputs.path }}"
+        CONFIG_INPUT="${{ inputs.configuration }}"
+        SUITE_INPUT="${{ inputs.test-suite }}"
+        GROUP_INPUT="${{ inputs.group }}"
+        EXCLUDE_GROUP_INPUT="${{ inputs.exclude-group }}"
+        DEBUG_INPUT="${{ inputs.debug }}"
+        ADDITIONAL_ARGS="${{ inputs.additional-args }}"
+        COVERAGE_DRIVER="${{ inputs.coverage-driver }}"
+        COVERAGE_FORMAT="${{ inputs.coverage-format }}"
+        COVERAGE_FILE="${{ inputs.coverage-file }}"
 
-        # Function to add parameter if value is not empty
+        PHPUNIT_CMD="$PATH_INPUT --colors=always"
+
         add_param() {
           if [ -n "$2" ]; then
             PHPUNIT_CMD="$PHPUNIT_CMD $1 $2"
           fi
         }
 
-        # Add coverage if driver is specified and not 'none'
-        if [ -n "${{ inputs.coverage-driver }}" ] && [ "${{ inputs.coverage-driver }}" != "none" ]; then
-          PHPUNIT_CMD="$PHPUNIT_CMD --coverage-${{ inputs.coverage-format }}=${{ inputs.coverage-file }}"
+        if [ -n "$COVERAGE_DRIVER" ] && [ "$COVERAGE_DRIVER" != "none" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD --coverage-$COVERAGE_FORMAT=$COVERAGE_FILE"
         fi
 
-        # Add other parameters
-        add_param "--configuration" "${{ inputs.configuration }}"
-        add_param "--testsuite" "${{ inputs.test-suite }}"
-        add_param "--group" "${{ inputs.group }}"
-        add_param "--exclude-group" "${{ inputs.exclude-group }}"
+        add_param "--configuration" "$CONFIG_INPUT"
+        add_param "--testsuite" "$SUITE_INPUT"
+        add_param "--group" "$GROUP_INPUT"
+        add_param "--exclude-group" "$EXCLUDE_GROUP_INPUT"
 
-        # Add debug flags if specified
-        if [ -n "${{ inputs.debug }}" ]; then
-          PHPUNIT_CMD="$PHPUNIT_CMD ${{ inputs.debug }}"
+        if [ -n "$DEBUG_INPUT" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD $DEBUG_INPUT"
         fi
 
-        # Add additional arguments
-        if [ -n "${{ inputs.additional-args }}" ]; then
-          PHPUNIT_CMD="$PHPUNIT_CMD ${{ inputs.additional-args }}"
+        if [ -n "$ADDITIONAL_ARGS" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD $ADDITIONAL_ARGS"
         fi
 
         echo "command=$PHPUNIT_CMD" >> $GITHUB_OUTPUT
         echo "PHPUnit command: $PHPUNIT_CMD"
 
-    - name: Run PHPUnit tests on linux.
+    - name: Run PHPUnit tests on Linux.
       shell: bash
       if: runner.os != 'Windows'
       run: ${{ steps.build-cmd.outputs.command }}
 
-    - name: Run PHPUnit tests on windows.
+    - name: Run PHPUnit tests on Windows.
       shell: pwsh
       if: runner.os == 'Windows'
       run: Invoke-Expression "${{ steps.build-cmd.outputs.command }}"
 
     - name: Upload test results to Codecov.
-      if: ${{ !cancelled() && inputs.coverage-driver != 'none' && inputs.coverage-token != '' }}
+      if: ${{ !cancelled() && inputs.coverage-driver != 'none' }}
       uses: codecov/test-results-action@v1
       with:
         token: ${{ inputs.coverage-token }}
 
     - name: Upload coverage to Codecov.
-      if: inputs.coverage-driver != '' && inputs.coverage-driver != 'none' && inputs.coverage-token != ''
+      if: ${{ !cancelled() && inputs.coverage-driver != 'none' }}
       uses: codecov/codecov-action@v5
       with:
         token: ${{ inputs.coverage-token }}
