@@ -2,6 +2,8 @@
 
 ## v2.0.3 Under development
 
+- Enh #65: Add action permission monitoring to multiple workflows (@terabytesoftw)
+
 ## v2.0.2 September 25, 2025
 
 - Bug #64: Add validation input options for `super-linter.yml` actions (@terabytesoftw)
