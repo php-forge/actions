@@ -96,6 +96,9 @@ jobs:
     runs-on: ${{ fromJSON(inputs.os) }}
 
     steps:
+      - name: Monitor action permissions.
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+
       - name: Checkout.
         uses: actions/checkout@v5
         with:

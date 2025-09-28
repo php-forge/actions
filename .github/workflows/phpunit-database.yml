@@ -175,6 +175,9 @@ jobs:
           --health-retries=${{ inputs.database-health-retries }}
 
     steps:
+      - name: Monitor action permissions.
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+
       - name: Checkout.
         uses: actions/checkout@v5
 
