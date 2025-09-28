@@ -1,5 +1,7 @@
 # Changelog
 
+## v2.0.4 Under development
+
 ## v2.0.3 September 28, 2025
 
 - Enh #65: Add action permission monitoring to multiple workflows (@terabytesoftw)
