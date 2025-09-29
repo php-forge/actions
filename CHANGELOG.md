@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.0.4 Under development
+## v2.0.4 September 29, 2025
 
 - Bug #66: Fix `linter.yml` workflow to add permissions for checks, contents, and statuses (@terabytesoftw)
 - Bug #67: Enhance composer command inputs with flags and options (@terabytesoftw)
