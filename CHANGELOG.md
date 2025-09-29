@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.0.5 Under development
+## v2.0.5 September 29, 2025
 
 - Bug #68: Add `ignore-platform-reqs` input to multiple workflow files (@terabytesoftw)
 
