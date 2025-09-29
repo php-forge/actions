@@ -44,6 +44,7 @@ on:
         default:
         required: false
         type: string
+
       os:
         description: OS runner as a JSON array string '["ubuntu-latest"]'.
         default: '["ubuntu-latest"]'
