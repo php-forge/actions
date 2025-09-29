@@ -2,6 +2,8 @@
 
 ## v2.0.5 Under development
 
+- Bug #68: Add `ignore-platform-reqs` input to multiple workflow files (@terabytesoftw)
+
 ## v2.0.4 September 29, 2025
 
 - Bug #66: Fix `linter.yml` workflow to add permissions for checks, contents, and statuses (@terabytesoftw)
