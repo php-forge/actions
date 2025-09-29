@@ -9,12 +9,17 @@ inputs:
     required: false
     type: string
   composer-command:
-    description: Composer command to run.
-    default: |-
-      composer update --prefer-dist \
-      --no-interaction \
-      --no-progress \
-      --optimize-autoloader \
+    description: Composer command (install or update) to run.
+    default: update
+    required: false
+    type: string
+  composer-flags:
+    description: Additional composer flags
+    default: >-
+      --prefer-dist
+      --no-interaction
+      --no-progress
+      --optimize-autoloader
       --ansi
     required: false
     type: string
@@ -33,6 +38,11 @@ inputs:
     default:
     required: false
     type: string
+  ignore-platform-reqs:
+    description: Whether to add --ignore-platform-reqs to composer command.
+    default: false
+    required: false
+    type: boolean
   ini-values:
     description: Initial values for PHP configuration.
     default: date.timezone='UTC'
@@ -86,6 +96,14 @@ runs:
       env:
         AUTH_TOKEN: ${{ inputs.auth-token }}
 
-    - name: Install dependencies
+    - name: Install dependencies with composer.
       shell: bash
-      run: ${{ inputs.composer-command }}
+      run: >-
+        composer
+        ${{ inputs.composer-command }}
+        ${{ inputs.composer-flags }}
+        ${{
+          inputs.ignore-platform-reqs == 'true'
+          && '--ignore-platform-reqs'
+          || ''
+        }}

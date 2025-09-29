@@ -10,8 +10,18 @@ on:
         required: false
         type: string
       composer-command:
-        description: Composer command to run.
-        default: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+        description: Composer command (install or update) to run.
+        default: update
+        required: false
+        type: string
+      composer-flags:
+        description: Additional composer flags
+        default: >-
+          --prefer-dist
+          --no-interaction
+          --no-progress
+          --optimize-autoloader
+          --ansi
         required: false
         type: string
       composer-version:
@@ -99,6 +109,7 @@ jobs:
         with:
           auth-token: ${{ secrets.AUTH_TOKEN }}
           composer-command: ${{ inputs.composer-command }}
+          composer-flags: ${{ inputs.composer-flags }}
           composer-version: ${{ inputs.composer-version }}
           coverage-driver: none
           extensions: ${{ inputs.extensions }}
@@ -112,4 +123,7 @@ jobs:
         run: ${{ inputs.hook }}
 
       - name: Static analysis.
-        run: vendor/bin/phpstan --configuration=${{ inputs.configuration }} ${{ inputs.command-options }}
+        run: >-
+          vendor/bin/phpstan
+          --configuration=${{ inputs.configuration }}
+          ${{ inputs.command-options }}
