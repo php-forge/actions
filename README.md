@@ -2,7 +2,7 @@
 <p align="center">
     <a href="https://github.com/php-forge/actions" target="_blank">
       <img src="https://avatars.githubusercontent.com/u/103309199?s=400&u=ca3561c692f53ed7eb290d3bb226a2828741606f&v=4" width="30%" alt="PHP Forge">
-    </a>    
+    </a>
     <h1 align="center">PHPForge - Reusable GitHub Actions</h1>
     <br>
 </p>
