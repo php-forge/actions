@@ -34,6 +34,11 @@ on:
         default: ${{ github.workflow }}-${{ github.ref }}
         required: false
         type: string
+      download-config:
+        description: Whether to download the ECS config file.
+        default: false
+        required: false
+        type: boolean
       enable-concurrency:
         description: Enable concurrency.
         default: true
@@ -44,7 +49,6 @@ on:
         default:
         required: false
         type: string
-
       os:
         description: OS runner as a JSON array string '["ubuntu-latest"]'.
         default: '["ubuntu-latest"]'
@@ -56,8 +60,8 @@ on:
         required: false
         type: string
       php-version:
-        description: PHP versions as a JSON array string '["8.4"]'.
-        default: '["8.4"]'
+        description: PHP versions as a JSON array string '["8.5"]'.
+        default: '["8.5"]'
         required: false
         type: string
       tools:
@@ -70,6 +74,9 @@ on:
       AUTH_TOKEN:
         description: GitHub token.
         required: false
+
+permissions:
+  contents: read
 
 jobs:
   ecs:
@@ -88,15 +95,44 @@ jobs:
         php-version: ${{ fromJson(inputs.php-version) }}
 
     steps:
-      - name: Monitor action permissions.
-        if: runner.os != 'Windows'
-        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+      - name: Checkout repository.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - name: Checkout.
-        uses: actions/checkout@v5
+      - name: Checkout reusable actions.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ job.workflow_repository }}
+          ref: ${{ job.workflow_sha }}
+          path: .php-forge-actions
+          persist-credentials: false
+
+      - name: Download ECS config file.
+        if: ${{ inputs.download-config }}
+        shell: bash
+        run: |
+          # skip download if ecs.php already exists in the repository
+          if [ -f ecs.php ]; then
+            echo "Using ecs.php from repository"
+            exit 0
+          fi
+
+          set -e
+          echo "Downloading ecs.php from main branch..."
+
+          wget --timeout=10 --tries=3 \
+            https://raw.githubusercontent.com/php-forge/template/main/ecs.php \
+            -O ecs.php
+
+          # validate it's a PHP file
+          if ! head -1 ecs.php | grep -q "<?php"; then
+            echo "Error: Downloaded file is not a valid PHP file."
+            exit 1
+          fi
 
       - name: Setup PHP Environment.
-        uses: php-forge/actions/actions/php-setup@main
+        uses: ./.php-forge-actions/actions/php-setup
         with:
           auth-token: ${{ secrets.AUTH_TOKEN }}
           composer-command: ${{ inputs.composer-command }}
@@ -109,4 +145,9 @@ jobs:
           tools: ${{ inputs.tools }}
 
       - name: Run Easy Coding Standard.
-        run: vendor/bin/ecs ${{ inputs.command-options }}
+        shell: bash
+        env:
+          ECS_COMMAND: >-
+            vendor/bin/ecs
+            ${{ inputs.command-options }}
+        run: bash -euo pipefail -c "$ECS_COMMAND"

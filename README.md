@@ -17,13 +17,10 @@ your CI/CD pipeline with battle-tested, configurable workflows for testing, stat
 
 ## Features
 
-- ✅ **Code Quality** - Easy Coding Standard (ECS) for consistent code formatting.
-- ✅ **Complete Testing Suite** - PHPUnit, Codeception, and mutation testing with Infection.
-- ✅ **Database Testing** - Multi-database support (MySQL, PostgreSQL, SQLite, etc.).
-- ✅ **Dependency Management** - Composer require checker for dependency validation.
-- ✅ **Linting** - Super Linter for multi-language linting.
-- ✅ **Static Analysis** - PHPStan integration.
-- ✅ **Zero Configuration** - Sensible defaults with extensive customization options.
+<picture>
+    <source media="(min-width: 768px)" srcset="./docs/svgs/features.svg">
+    <img src="./docs/svgs/features-mobile.svg" alt="Feature Overview" style="width: 100%;">
+</picture>
 
 ## Available Workflows
 
@@ -39,23 +36,28 @@ your CI/CD pipeline with battle-tested, configurable workflows for testing, stat
 - [`composer-require-checker.yml`](https://github.com/php-forge/actions/blob/main/.github/workflows/composer-require-checker.yml) - Dependency validation.
 - [`ecs.yml`](https://github.com/php-forge/actions/blob/main/.github/workflows/ecs.yml) - Easy Coding Standard.
 - [`phpstan.yml`](https://github.com/php-forge/actions/blob/main/.github/workflows/phpstan.yml) - Static analysis.
-- [`super-linter.yml`](https://github.com/php-forge/actions/blob/main/.github/workflows/super-linter.yml) - Super Linter for multi-language linting.
+- [`quality.yml`](https://github.com/php-forge/actions/blob/main/.github/workflows/quality.yml) - Reusable quality checks.
+- [`security.yml`](https://github.com/php-forge/actions/blob/main/.github/workflows/security.yml) - Security checks for GitHub Actions and secrets.
 
 ### Utility Actions
 
+- [`actionlint`](https://github.com/php-forge/actions/blob/main/actions/actionlint/action.yml) - GitHub Actions workflow linting.
+- [`codespell`](https://github.com/php-forge/actions/blob/main/actions/codespell/action.yml) - Spelling validation.
+- [`editorconfig-checker`](https://github.com/php-forge/actions/blob/main/actions/editorconfig-checker/action.yml) - EditorConfig validation.
+- [`markdownlint`](https://github.com/php-forge/actions/blob/main/actions/markdownlint/action.yml) - Markdown validation.
 - [`php-setup`](https://github.com/php-forge/actions/blob/main/actions/php-setup/action.yml) - PHP environment setup.
 - [`phpunit-runner`](https://github.com/php-forge/actions/blob/main/actions/phpunit/action.yml) - Advanced PHPUnit execution.
+- [`prettier`](https://github.com/php-forge/actions/blob/main/actions/prettier/action.yml) - Markdown and YAML formatting validation.
+- [`yamllint`](https://github.com/php-forge/actions/blob/main/actions/yamllint/action.yml) - YAML validation.
 
 ## Quick start
 
 ### Composer Require Checker
 
-<!-- editorconfig-checker-disable -->
-<!-- prettier-ignore-start -->
 ```yaml
 ---
 on:
-  pull_request:
+  pull_request: &ignore-paths
     paths-ignore:
       - ".gitattributes"
       - ".gitignore"
@@ -63,13 +65,7 @@ on:
       - "docs/**"
       - "README.md"
 
-  push:
-    paths-ignore:
-      - ".gitattributes"
-      - ".gitignore"
-      - "CHANGELOG.md"
-      - "docs/**"
-      - "README.md"
+  push: *ignore-paths
 
 name: composer-require-checker
 
@@ -79,17 +75,13 @@ jobs:
     with:
       command-options: "--config-file=.composer-require-checker.json"
 ```
-<!-- prettier-ignore-end -->
-<!-- editorconfig-checker-enable -->
 
 ### Easy Coding Standard
 
-<!-- editorconfig-checker-disable -->
-<!-- prettier-ignore-start -->
 ```yaml
 ---
 on:
-  pull_request:
+  pull_request: &ignore-paths
     paths-ignore:
       - ".gitattributes"
       - ".gitignore"
@@ -97,13 +89,7 @@ on:
       - "docs/**"
       - "README.md"
 
-  push:
-    paths-ignore:
-      - ".gitattributes"
-      - ".gitignore"
-      - "CHANGELOG.md"
-      - "docs/**"
-      - "README.md"
+  push: *ignore-paths
 
 name: easy-coding-standards
 
@@ -114,17 +100,13 @@ jobs:
       command-options: "check --ansi --no-progress-bar"
       php-version: '["8.4"]'
 ```
-<!-- prettier-ignore-end -->
-<!-- editorconfig-checker-enable -->
 
 ### Infection Mutation Testing {#infection}
 
-<!-- editorconfig-checker-disable -->
-<!-- prettier-ignore-start -->
 ```yaml
 ---
 on:
-  pull_request:
+  pull_request: &ignore-paths
     paths-ignore:
       - ".gitattributes"
       - ".gitignore"
@@ -132,19 +114,13 @@ on:
       - "docs/**"
       - "README.md"
 
-  push:
-    paths-ignore:
-      - ".gitattributes"
-      - ".gitignore"
-      - "CHANGELOG.md"
-      - "docs/**"
-      - "README.md"
+  push: *ignore-paths
 
 name: mutation-testing
 
 jobs:
   mutation-testing:
-    uses: php-forge/actions/.github/workflows/reusable-infection.yml@v2
+    uses: php-forge/actions/.github/workflows/infection.yml@v2
     secrets:
       STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
     with:
@@ -154,17 +130,13 @@ jobs:
       # PHPStan integration
       phpstan: true
 ```
-<!-- prettier-ignore-end -->
-<!-- editorconfig-checker-enable -->
 
 ### PHPUnit
 
-<!-- editorconfig-checker-disable -->
-<!-- prettier-ignore-start -->
 ```yaml
 ---
 on:
-  pull_request:
+  pull_request: &ignore-paths
     paths-ignore:
       - ".gitattributes"
       - ".gitignore"
@@ -172,13 +144,7 @@ on:
       - "docs/**"
       - "README.md"
 
-  push:
-    paths-ignore:
-      - ".gitattributes"
-      - ".gitignore"
-      - "CHANGELOG.md"
-      - "docs/**"
-      - "README.md"
+  push: *ignore-paths
 
 name: build
 
@@ -206,17 +172,13 @@ jobs:
       phpunit-exclude-group: integration
       phpunit-group: unit
 ```
-<!-- prettier-ignore-end -->
-<!-- editorconfig-checker-enable -->
 
 ### PHPUnit with Database
 
-<!-- editorconfig-checker-disable -->
-<!-- prettier-ignore-start -->
 ```yaml
 ---
 on:
-  pull_request:
+  pull_request: &ignore-paths
     paths-ignore:
       - ".gitattributes"
       - ".gitignore"
@@ -224,13 +186,7 @@ on:
       - "docs/**"
       - "README.md"
 
-  push:
-    paths-ignore:
-      - ".gitattributes"
-      - ".gitignore"
-      - "CHANGELOG.md"
-      - "docs/**"
-      - "README.md"
+  push: *ignore-paths
 
 name: build-mysql
 
@@ -256,8 +212,6 @@ jobs:
         php-version: '["8.4"]'
         phpunit-group: mysql
 ```
-<!-- prettier-ignore-end -->
-<!-- editorconfig-checker-enable -->
 
 **Supported Databases:**
 
@@ -270,12 +224,10 @@ jobs:
 
 ### PHPStan Static Analysis
 
-<!-- editorconfig-checker-disable -->
-<!-- prettier-ignore-start -->
 ```yaml
 ---
 on:
-  pull_request:
+  pull_request: &ignore-paths
     paths-ignore:
       - ".gitattributes"
       - ".gitignore"
@@ -283,13 +235,7 @@ on:
       - "docs/**"
       - "README.md"
 
-  push:
-    paths-ignore:
-      - ".gitattributes"
-      - ".gitignore"
-      - "CHANGELOG.md"
-      - "docs/**"
-      - "README.md"
+  push: *ignore-paths
 
 name: static-analysis
 
@@ -304,13 +250,9 @@ jobs:
       php-version: '["8.4"]'
       tools: cs2pr
 ```
-<!-- prettier-ignore-end -->
-<!-- editorconfig-checker-enable -->
 
-### Super Linter
+### Linter
 
-<!-- editorconfig-checker-disable -->
-<!-- prettier-ignore-start -->
 ```yaml
 ---
 on:
@@ -321,16 +263,44 @@ name: linter
 
 jobs:
   linter:
-    uses: php-forge/actions/.github/workflows/super-linter.yml@main
+    uses: php-forge/actions/.github/workflows/quality.yml@main
     permissions:
-      checks: write
       contents: read
-      statuses: write    
-    secrets:
-      AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # Optional configuration and ignore paths, including former .github/linters files.
+    # with:
+    #   actionlint-config: .github/linters/actionlint.yml
+    #   codespell-config: .github/linters/.codespellrc
+    #   codespell-ignore-words-file: .github/linters/codespell-ignored-words.txt
+    #   editorconfig-checker-config: .github/linters/.editorconfig-checker.json
+    #   markdownlint-config: .github/linters/.markdown-lint.yml
+    #   prettier-config: .github/linters/.prettierrc
+    #   prettier-ignore-path: .github/linters/.prettierignore
+    #   yamllint-config: .github/linters/.yaml-lint.yml
 ```
-<!-- prettier-ignore-end -->
-<!-- editorconfig-checker-enable -->
+
+### Security
+
+```yaml
+---
+on:
+  - pull_request
+  - push
+
+name: security
+
+permissions:
+  contents: read
+
+jobs:
+  security:
+    uses: php-forge/actions/.github/workflows/security.yml@main
+    permissions:
+      contents: read
+    # Optional configuration and ignore paths, including former .github/linters files.
+    # with:
+    #   gitleaks-config: .github/linters/.gitleaks.toml
+    #   zizmor-config: .github/linters/zizmor.yml
+```
 
 > **Note**: YAML files should use 2-space indentation. This example shows correct YAML syntax - copy it to your `.github/workflows/*.yml` files as-is.
 
@@ -340,7 +310,7 @@ jobs:
 
 ## Quality code
 
-[![Super-Linter](https://img.shields.io/github/actions/workflow/status/php-forge/actions/linter.yml?style=for-the-badge&label=Super-Linter&logo=github)](https://github.com/php-forge/actions/actions/workflows/linter.yml)
+[![Quality](https://img.shields.io/github/actions/workflow/status/php-forge/actions/linter.yml?style=for-the-badge&label=Quality&logo=github)](https://github.com/php-forge/actions/actions/workflows/linter.yml)
 
 ## Our social networks
 

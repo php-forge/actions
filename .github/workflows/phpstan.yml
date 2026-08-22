@@ -70,8 +70,8 @@ on:
         required: false
         type: string
       php-version:
-        description: PHP versions as a JSON array string '["8.4"]'.
-        default: '["8.4"]'
+        description: PHP versions as a JSON array string '["8.5"]'.
+        default: '["8.5"]'
         required: false
         type: string
       tools:
@@ -84,6 +84,9 @@ on:
       AUTH_TOKEN:
         description: GitHub token.
         required: false
+
+permissions:
+  contents: read
 
 jobs:
   phpstan:
@@ -102,15 +105,21 @@ jobs:
         php-version: ${{ fromJson(inputs.php-version) }}
 
     steps:
-      - name: Monitor action permissions.
-        if: runner.os != 'Windows'
-        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+      - name: Checkout repository.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - name: Checkout.
-        uses: actions/checkout@v5
+      - name: Checkout reusable actions.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ job.workflow_repository }}
+          ref: ${{ job.workflow_sha }}
+          path: .php-forge-actions
+          persist-credentials: false
 
       - name: Setup PHP Environment.
-        uses: php-forge/actions/actions/php-setup@main
+        uses: ./.php-forge-actions/actions/php-setup
         with:
           auth-token: ${{ secrets.AUTH_TOKEN }}
           composer-command: ${{ inputs.composer-command }}
@@ -126,10 +135,15 @@ jobs:
       - name: Pre-setup hook.
         if: inputs.hook != ''
         shell: bash
-        run: ${{ inputs.hook }}
+        env:
+          HOOK: ${{ inputs.hook }}
+        run: bash -euo pipefail -c "$HOOK"
 
       - name: Static analysis.
-        run: >-
-          vendor/bin/phpstan
-          --configuration=${{ inputs.configuration }}
-          ${{ inputs.command-options }}
+        shell: bash
+        env:
+          PHPSTAN_COMMAND: >-
+            vendor/bin/phpstan
+            --configuration=${{ inputs.configuration }}
+            ${{ inputs.command-options }}
+        run: bash -euo pipefail -c "$PHPSTAN_COMMAND"
