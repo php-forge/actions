@@ -70,8 +70,8 @@ on:
         required: false
         type: string
       php-version:
-        description: PHP versions as a JSON array string '["8.4"]'.
-        default: '["8.1","8.2","8.3","8.4"]'
+        description: PHP versions as a JSON array string '["8.5"]'.
+        default: '["8.3","8.4","8.5"]'
         required: false
         type: string
       tools:
@@ -87,6 +87,9 @@ on:
       CODECOV_TOKEN:
         description: Codecov token.
         required: false
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -109,15 +112,21 @@ jobs:
         php-version: ${{ fromJson(inputs.php-version) }}
 
     steps:
-      - name: Monitor action permissions.
-        if: runner.os != 'Windows'
-        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+      - name: Checkout repository.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - name: Checkout.
-        uses: actions/checkout@v5
+      - name: Checkout reusable actions.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ job.workflow_repository }}
+          ref: ${{ job.workflow_sha }}
+          path: .php-forge-actions
+          persist-credentials: false
 
       - name: Setup PHP Environment.
-        uses: php-forge/actions/actions/php-setup@main
+        uses: ./.php-forge-actions/actions/php-setup
         with:
           auth-token: ${{ secrets.AUTH_TOKEN }}
           composer-command: ${{ inputs.composer-command }}
@@ -132,30 +141,35 @@ jobs:
 
       - name: Run hook.
         if: inputs.hook != ''
-        run: ${{ inputs.hook }}
         shell: bash
+        env:
+          HOOK: ${{ inputs.hook }}
+        run: bash -euo pipefail -c "$HOOK"
 
       - name: Generate base classes for all suites.
         run: vendor/bin/codecept build
 
       - name: Run tests with codeception with code coverage.
         continue-on-error: ${{ inputs.debug }}
-        run: ${{ inputs.codeception-command }}
+        shell: bash
+        env:
+          CODECEPTION_COMMAND: ${{ inputs.codeception-command }}
+        run: bash -euo pipefail -c "$CODECEPTION_COMMAND"
 
       - name: Upload coverage to Codecov.
         if: ${{!cancelled() && inputs.coverage-driver != 'none'}}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./${{ inputs.coverage-file }}
 
       - name: Archive codeception results
         if: ${{ inputs.debug }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: output
-          path: ./runtime/tests/_output
+          path: ./runtime/output
 
       - name: Download all workflow run artifacts
         if: ${{ inputs.debug }}
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8

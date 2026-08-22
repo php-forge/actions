@@ -7,12 +7,10 @@ inputs:
     description: GitHub token.
     default:
     required: false
-    type: string
   composer-command:
     description: Composer command (install or update) to run.
     default: update
     required: false
-    type: string
   composer-flags:
     description: Additional composer flags
     default: >-
@@ -22,68 +20,90 @@ inputs:
       --optimize-autoloader
       --ansi
     required: false
-    type: string
   composer-version:
     description: Composer version to use.
     default:
     required: false
-    type: string
   coverage-driver:
     description: Code coverage driver to use (pcov, xdebug).
     default: pcov
     required: false
-    type: string
   extensions:
     description: List of extensions to PHP.
     default:
     required: false
-    type: string
   ignore-platform-reqs:
     description: Whether to add --ignore-platform-reqs to composer command.
     default: false
     required: false
-    type: boolean
   ini-values:
     description: Initial values for PHP configuration.
     default: date.timezone='UTC'
     required: false
-    type: string
   php-version:
-    description: PHP versions as a JSON array string '["8.4"]'.
-    default: '["8.1","8.2","8.3","8.4"]'
+    description: PHP version to install (for example, "8.4").
+    default: "8.4"
     required: false
-    type: string
   tools:
     description: Tools to test, separated by comma.
     default:
     required: false
-    type: string
 
 runs:
   using: composite
   steps:
-    - name: Checkout
-      uses: actions/checkout@v5
+    - name: Checkout repository.
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        clean: false
+        persist-credentials: false
+
+    - name: Build PHP ini values.
+      id: build-ini-values
+      shell: bash
+      env:
+        COVERAGE_DRIVER: ${{ inputs.coverage-driver }}
+        INI_VALUES: ${{ inputs.ini-values }}
+      run: |
+        if [ "$COVERAGE_DRIVER" = "none" ] \
+          && ! echo "$INI_VALUES" | grep -Eiq '(^|[[:space:],])opcache\.enable_cli[[:space:]]*='; then
+          if [ -n "$INI_VALUES" ]; then
+            INI_VALUES="$INI_VALUES, opcache.enable_cli=1"
+          else
+            INI_VALUES="opcache.enable_cli=1"
+          fi
+        fi
+
+        echo "values=$INI_VALUES" >> "$GITHUB_OUTPUT"
 
     - name: Install PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
       with:
         coverage: ${{ inputs.coverage-driver }}
         extensions: ${{ inputs.extensions }}
-        ini-values: ${{ inputs.ini-values }}
+        ini-values: ${{ steps.build-ini-values.outputs.values }}
         php-version: ${{ inputs.php-version }}
         tools: ${{ inputs.tools }}
 
     - name: Update composer.
       shell: bash
-      run: composer self-update ${{ inputs.composer-version }}
+      env:
+        COMPOSER_VERSION: ${{ inputs.composer-version }}
+      run: |
+        if [ -n "$COMPOSER_VERSION" ]; then
+          composer self-update "$COMPOSER_VERSION"
+        else
+          composer self-update
+        fi
 
     - name: Configure composer on linux.
       shell: bash
       if: runner.os == 'Linux'
+      env:
+        AUTH_TOKEN: ${{ inputs.auth-token }}
       run: |
-        if [ "${{ inputs.auth-token }}" != '' ]; then
-          composer config -g github-oauth.github.com ${{ inputs.auth-token }};
+        if [ "$AUTH_TOKEN" != '' ]; then
+          composer config -g github-oauth.github.com "$AUTH_TOKEN";
         fi
 
     - name: Configure composer on windows.
@@ -98,12 +118,14 @@ runs:
 
     - name: Install dependencies with composer.
       shell: bash
-      run: >-
-        composer
-        ${{ inputs.composer-command }}
-        ${{ inputs.composer-flags }}
-        ${{
-          inputs.ignore-platform-reqs == 'true'
-          && '--ignore-platform-reqs'
-          || ''
-        }}
+      env:
+        COMPOSER_INSTALL_COMMAND: >-
+          composer
+          ${{ inputs.composer-command }}
+          ${{ inputs.composer-flags }}
+          ${{
+            inputs.ignore-platform-reqs == 'true'
+            && '--ignore-platform-reqs'
+            || ''
+          }}
+      run: bash -euo pipefail -c "$COMPOSER_INSTALL_COMMAND"
