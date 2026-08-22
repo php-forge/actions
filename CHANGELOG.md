@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v3.0.0 Under development
+## v3.0.0 August 22, 2026
 
 - ci!: replace `super-linter.yml` with the new reusable quality and security workflows (`quality.yml`, `security.yml`, `check-security.yml`). Consumers of `super-linter.yml` must migrate to `quality.yml` (or use the provided `linter.yml` caller).
 - fix(readme): update logo link and alignment in `README.md`.
