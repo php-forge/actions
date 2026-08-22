@@ -1,12 +1,8 @@
 <!-- markdownlint-disable MD041 -->
 <p align="center">
-    <a href="https://github.com/php-forge/actions" target="_blank">
-    <img
-        alt="PHPForge Logo"
-        height="100px"
-        src="https://avatars.githubusercontent.com/u/103309199?s=400&u=ca3561c692f53ed7eb290d3bb226a2828741606f&v=4"
-    >
-    </a>
+    <a href="https://github.com/php-forge/support" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/103309199?s=400&u=ca3561c692f53ed7eb290d3bb226a2828741606f&v=4" height="150px" alt="PHP Forge">
+    </a>    
     <h1 align="center">PHPForge - Reusable GitHub Actions</h1>
     <br>
 </p>

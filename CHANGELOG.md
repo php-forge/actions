@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## v3.0.0 Under development
 
 - ci!: replace `super-linter.yml` with the new reusable quality and security workflows (`quality.yml`, `security.yml`, `check-security.yml`). Consumers of `super-linter.yml` must migrate to `quality.yml` (or use the provided `linter.yml` caller).
+- fix(readme): update logo link and alignment in `README.md`.
 
 ## v2.0.5 September 29, 2025
 
