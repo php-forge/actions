@@ -1,0 +1,130 @@
+---
+name: Testo Test Runner.
+description: Run Testo tests with coverage and configurable options.
+
+inputs:
+  additional-args:
+    description: Additional Testo arguments.
+    default: "--log-junit=junit.xml"
+    required: false
+  configuration:
+    description: Testo configuration file, passed with `--config`.
+    default: ""
+    required: false
+  coverage-driver:
+    description: Code coverage driver to use (pcov, xdebug, none).
+    default: ""
+    required: false
+  coverage-file:
+    description: Coverage output file name.
+    default: coverage.xml
+    required: false
+  coverage-format:
+    description: Coverage report format (clover, cobertura, xml).
+    default: clover
+    required: false
+  coverage-token:
+    description: Codecov token for uploading coverage.
+    default: ""
+    required: false
+  exclude-group:
+    description: Group to exclude, passed as `--group=!<name>`.
+    default: ""
+    required: false
+  filter:
+    description: "Test filter: a class, `Class::method`, FQN or name fragment, passed with `--filter`."
+    default: ""
+    required: false
+  group:
+    description: Group to run, passed with `--group`.
+    default: ""
+    required: false
+  path:
+    description: Path to the Testo executable.
+    default: vendor/bin/testo
+    required: false
+  suite:
+    description: Suite to run, passed with `--suite`.
+    default: ""
+    required: false
+  type:
+    description: Test type filter passed with `--type`; `!bench` skips benchmarks.
+    default: "!bench"
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Build Testo command.
+      id: build-cmd
+      shell: bash
+      env:
+        ADDITIONAL_ARGS: ${{ inputs.additional-args }}
+        CONFIG_INPUT: ${{ inputs.configuration }}
+        COVERAGE_DRIVER: ${{ inputs.coverage-driver }}
+        COVERAGE_FILE: ${{ inputs.coverage-file }}
+        COVERAGE_FORMAT: ${{ inputs.coverage-format }}
+        EXCLUDE_GROUP_INPUT: ${{ inputs.exclude-group }}
+        FILTER_INPUT: ${{ inputs.filter }}
+        GROUP_INPUT: ${{ inputs.group }}
+        PATH_INPUT: ${{ inputs.path }}
+        SUITE_INPUT: ${{ inputs.suite }}
+        TYPE_INPUT: ${{ inputs.type }}
+      run: |
+        TESTO_CMD="$PATH_INPUT --ansi"
+
+        add_param() {
+          if [ -n "$2" ]; then
+            TESTO_CMD="$TESTO_CMD $1=$2"
+          fi
+        }
+
+        if [ -n "$COVERAGE_DRIVER" ] && [ "$COVERAGE_DRIVER" != "none" ]; then
+          TESTO_CMD="$TESTO_CMD --coverage-$COVERAGE_FORMAT=$COVERAGE_FILE"
+        fi
+
+        add_param "--config" "$CONFIG_INPUT"
+        add_param "--suite" "$SUITE_INPUT"
+        add_param "--filter" "$FILTER_INPUT"
+        add_param "--group" "$GROUP_INPUT"
+
+        if [ -n "$EXCLUDE_GROUP_INPUT" ]; then
+          add_param "--group" "!$EXCLUDE_GROUP_INPUT"
+        fi
+
+        add_param "--type" "$TYPE_INPUT"
+
+        if [ -n "$ADDITIONAL_ARGS" ]; then
+          TESTO_CMD="$TESTO_CMD $ADDITIONAL_ARGS"
+        fi
+
+        echo "command=$TESTO_CMD" >> "$GITHUB_OUTPUT"
+        echo "Testo command: $TESTO_CMD"
+
+    - name: Run Testo tests on Linux.
+      shell: bash
+      if: runner.os != 'Windows'
+      env:
+        TESTO_COMMAND: ${{ steps.build-cmd.outputs.command }}
+      run: bash -euo pipefail -c "$TESTO_COMMAND"
+
+    - name: Run Testo tests on Windows.
+      shell: pwsh
+      if: runner.os == 'Windows'
+      env:
+        TESTO_COMMAND: ${{ steps.build-cmd.outputs.command }}
+      run: Invoke-Expression "$env:TESTO_COMMAND"
+
+    - name: Upload test results to Codecov.
+      if: ${{ !cancelled() && inputs.coverage-driver != 'none' }}
+      uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
+      with:
+        token: ${{ inputs.coverage-token }}
+        report_type: test_results
+
+    - name: Upload coverage to Codecov.
+      if: ${{ !cancelled() && inputs.coverage-driver != 'none' }}
+      uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
+      with:
+        token: ${{ inputs.coverage-token }}
+        files: ./${{ inputs.coverage-file }}
