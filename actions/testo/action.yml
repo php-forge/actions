@@ -20,7 +20,7 @@ inputs:
     default: coverage.xml
     required: false
   coverage-format:
-    description: Coverage report format (clover, cobertura, xml).
+    description: Coverage report format (clover, cobertura).
     default: clover
     required: false
   coverage-token:
@@ -32,7 +32,7 @@ inputs:
     default: ""
     required: false
   filter:
-    description: "Test filter: a class, `Class::method`, FQN or name fragment, passed with `--filter`."
+    description: "Test filter: a short class name, `Class::method` or a name fragment, passed with `--filter`."
     default: ""
     required: false
   group:

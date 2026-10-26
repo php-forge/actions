@@ -40,7 +40,7 @@ on:
         required: false
         type: string
       coverage-format:
-        description: Coverage report format (clover, cobertura, xml).
+        description: Coverage report format (clover, cobertura).
         default: clover
         required: false
         type: string
@@ -95,7 +95,7 @@ on:
         required: false
         type: string
       testo-filter:
-        description: "Test filter: a class, `Class::method`, FQN or name fragment, passed with `--filter`."
+        description: "Test filter: a short class name, `Class::method` or a name fragment, passed with `--filter`."
         default: ""
         required: false
         type: string
