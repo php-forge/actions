@@ -137,7 +137,7 @@ jobs:
 
       - name: Run Gitleaks.
         if: ${{ steps.gitleaks-license.outputs.available == 'true' }}
-        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITLEAKS_CONFIG: ${{ inputs.gitleaks-config }}
@@ -169,7 +169,7 @@ jobs:
           persist-credentials: false
 
       - name: Run zizmor.
-        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
+        uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e # v0.7.1
         with:
           advanced-security: false
           annotations: true
