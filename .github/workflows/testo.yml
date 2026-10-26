@@ -80,7 +80,7 @@ on:
         required: false
         type: string
       testo-additional-args:
-        description: Additional Testo arguments.
+        description: Additional Testo arguments, separated by whitespace.
         default: "--log-junit=junit.xml"
         required: false
         type: string
@@ -95,7 +95,7 @@ on:
         required: false
         type: string
       testo-filter:
-        description: "Test filter: a short class name, `Class::method` or a name fragment, passed with `--filter`."
+        description: "Test filter: a class, `Class::method`, FQN or name fragment, passed with `--filter`."
         default: ""
         required: false
         type: string
@@ -141,7 +141,7 @@ jobs:
     name: PHP ${{ matrix.php-version }}-${{ matrix.os }}
 
     concurrency:
-      group: ${{ matrix.os }}-${{ matrix.php-version }}-${{ inputs.concurrency-group }}
+      group: ${{ inputs.enable-concurrency && format('{0}-{1}-{2}', matrix.os, matrix.php-version, inputs.concurrency-group) || format('{0}-{1}-{2}-{3}', matrix.os, matrix.php-version, inputs.concurrency-group, github.run_id) }}
       cancel-in-progress: ${{ inputs.enable-concurrency }}
 
     runs-on: ${{ matrix.os }}
@@ -158,16 +158,8 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Checkout reusable actions.
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          repository: ${{ job.workflow_repository }}
-          ref: ${{ job.workflow_sha }}
-          path: .php-forge-actions
-          persist-credentials: false
-
       - name: Setup PHP Environment.
-        uses: ./.php-forge-actions/actions/php-setup
+        uses: $/actions/php-setup
         with:
           auth-token: ${{ secrets.AUTH_TOKEN }}
           composer-command: ${{ inputs.composer-command }}
@@ -188,7 +180,7 @@ jobs:
         run: bash -euo pipefail -c "$HOOK"
 
       - name: Run Testo tests with coverage.
-        uses: ./.php-forge-actions/actions/testo
+        uses: $/actions/testo
         with:
           additional-args: ${{ inputs.testo-additional-args }}
           configuration: ${{ inputs.testo-configuration }}

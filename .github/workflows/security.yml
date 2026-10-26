@@ -137,7 +137,7 @@ jobs:
 
       - name: Run Gitleaks.
         if: ${{ steps.gitleaks-license.outputs.available == 'true' }}
-        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITLEAKS_CONFIG: ${{ inputs.gitleaks-config }}
