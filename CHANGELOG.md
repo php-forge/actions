@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v3.0.2 Under development
 
+- feat(testo): add junit-file input for JUnit report and update additional args handling.
+
 ## v3.0.1 October 26, 2026
 
 - ci(actions): add the reusable `testo.yml` workflow and the `testo` composite action to run Testo suites with coverage and Codecov uploads.
