@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## v3.0.2 Under development
 
 - feat(testo): add junit-file input for JUnit report and update additional args handling.
+- ci(actions): add the reusable `scorecard.yml` workflow to run OpenSSF Scorecard in git file mode with SARIF upload and result publishing.
 
 ## v3.0.1 October 26, 2026
 
