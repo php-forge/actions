@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v3.0.2 Under development
+## v3.0.2 November 12, 2026
 
 - feat(testo): add junit-file input for JUnit report and update additional args handling.
 - ci(actions): add the reusable `scorecard.yml` workflow to run OpenSSF Scorecard in git file mode with SARIF upload and result publishing.
