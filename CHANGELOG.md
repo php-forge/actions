@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v3.0.3 Under development
 
+- ci(workflows): update PHP version descriptions and defaults to include `8.6`.
+
 ## v3.0.2 November 12, 2026
 
 - feat(testo): add junit-file input for JUnit report and update additional args handling.
